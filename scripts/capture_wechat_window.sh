@@ -11,7 +11,19 @@ rect="$(
   osascript <<'OSA'
 tell application "System Events"
   tell process "WeChat"
-    set w to window 1
+    set targetWindow to missing value
+    repeat with w in windows
+      try
+        if name of w is "微信" then
+          set targetWindow to w
+          exit repeat
+        end if
+      end try
+    end repeat
+    if targetWindow is missing value then
+      set targetWindow to window 1
+    end if
+    set w to targetWindow
     set {x, y} to position of w
     set {w0, h0} to size of w
     return (x as text) & "," & (y as text) & "," & (w0 as text) & "," & (h0 as text)
