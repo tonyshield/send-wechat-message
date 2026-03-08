@@ -15,9 +15,10 @@ Automate the macOS WeChat desktop client conservatively. Prefer deterministic GU
 2. Bring WeChat to the foreground and capture the current window.
 3. Identify whether the target conversation is already visible in the chat list.
 4. Prefer keyboard navigation in the visible chat list over mouse clicks.
-5. Open the target chat, focus the composer, and write the exact message text into the composer.
-6. Stop and ask for confirmation before sending.
-7. Send only after confirmation, then capture a proof screenshot.
+5. If the target is a group chat, confirm it has local chat history before relying on search results.
+6. Open the target chat, focus the composer, and write the exact message text into the composer.
+7. Stop and ask for confirmation before sending.
+8. Send only after confirmation, then capture a proof screenshot.
 
 ## Quick Start
 
@@ -47,6 +48,20 @@ If the desired contact is not visible in the current chat list, either:
 - ask the user to bring the target chat into view before continuing.
 
 This skill is optimized for the visible-chat path because WeChat exposes a sparse accessibility tree.
+
+## Search Strategy
+
+When the target chat is not visible:
+
+1. Use `Command+F` to focus WeChat search.
+2. Write the search text through the focused search field's `AXValue`.
+3. Wait for the dropdown results to render.
+4. Use arrow keys to move onto the local result.
+5. Press Return only after a local chat or group result is highlighted.
+
+Do not press Return immediately after typing into search. In the current macOS WeChat build, that often opens the separate `搜一搜` window instead of the local chat result.
+
+For group chats, local search works reliably only when the group already has local history on the current Mac. If the group is missing, ask the user to sync or open the group once manually before retrying.
 
 ## Drafting The Message
 
@@ -88,4 +103,6 @@ Read [references/troubleshooting.md](references/troubleshooting.md) when:
 - WeChat opens but cannot be controlled
 - typed Chinese text is altered by the IME
 - `Command+V` or the Edit menu paste does not land in the composer
+- WeChat search opens `搜一搜` instead of the local chat
+- a group chat cannot be found until local history is synced
 - window screenshots are blank or capture the desktop instead of WeChat

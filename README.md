@@ -42,6 +42,23 @@ scripts/capture_wechat_window.sh
 
 Do not send automatically without explicit user confirmation.
 
+### Group chat and search notes
+
+- Group chats are searchable only after local history exists on the current Mac WeChat client.
+- In search, do not press Return immediately after entering text.
+- Wait for the dropdown, move to the local result with arrow keys, then press Return.
+- Avoid mouse-based selection for fragile states; keyboard navigation is more reliable.
+
+### Local installation via symlink
+
+For fast iteration, symlink the repo into your Codex skills directory:
+
+```bash
+ln -sfn /Users/m4air/Developer/send-wechat-message /Users/m4air/.codex/skills/send-wechat-message
+```
+
+This keeps the installed skill pointing at your working repo, so updates are picked up without copying files.
+
 ## 中文
 
 `send-wechat-message` 是一个用于控制 macOS 微信桌面端的 Codex skill，基于辅助功能自动化。
@@ -83,3 +100,20 @@ scripts/capture_wechat_window.sh
 ```
 
 不要在没有用户明确确认的情况下自动发送。
+
+### 群聊与搜索经验
+
+- 群聊只有在当前 Mac 微信已经同步到本地历史后，才比较容易被本地搜索命中。
+- 在搜索框输入后不要立刻回车。
+- 先等下拉结果出现，再用方向键选中本地结果后回车。
+- 在容易失焦的场景里，优先使用键盘导航，不要依赖鼠标点选。
+
+### 用软链接本地安装
+
+为了便于快速迭代，可以把这个 repo 直接软链接到 Codex 的 skills 目录：
+
+```bash
+ln -sfn /Users/m4air/Developer/send-wechat-message /Users/m4air/.codex/skills/send-wechat-message
+```
+
+这样安装后的 skill 会直接指向当前开发仓库，不需要每次复制文件。

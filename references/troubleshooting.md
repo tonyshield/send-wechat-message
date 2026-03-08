@@ -58,6 +58,30 @@ scripts/focus_composer_and_set_value.sh "<message>"
 
 The old `scripts/focus_composer_and_paste.sh` entry point is kept as a compatibility wrapper.
 
+## Search Opens `搜一搜`
+
+If you type a query and immediately press Return, WeChat may open the separate `搜一搜` window instead of selecting the local chat result.
+
+Preferred fix:
+
+1. focus search with `Command+F`
+2. write the query
+3. wait for the dropdown results
+4. use arrow keys to move to the local result
+5. press Return only after the local result is highlighted
+
+If `搜一搜` already opened, close that window and retry.
+
+## Group Chat Cannot Be Found
+
+On macOS WeChat, group chats may not be selectable from search unless the current machine already has local history for that group.
+
+If a group does not appear in the local result section:
+
+- ask the user to sync local history
+- or ask the user to open the group once manually
+- then retry the same search flow
+
 ## Typed Chinese Text Changes Unexpectedly
 
 Direct simulated typing can be rewritten by the current IME. Typical failures include:

@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.0 - 2026-03-09
+
+- Added guidance for group-chat handling on macOS WeChat, including the requirement for local history before local search can select a group.
+- Added search-result guidance to avoid accidentally opening the separate `搜一搜` window.
+- Added bilingual installation instructions for using a symlink in the local Codex skills directory.
+- Captured the keyboard-first workflow and the real-world group-chat discovery behavior in the skill docs.
+
 ## 0.3.1 - 2026-03-09
 
 - Renamed the primary draft writer to `focus_composer_and_set_value.sh`.
