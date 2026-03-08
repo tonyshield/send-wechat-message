@@ -7,17 +7,39 @@ if [ "$#" -ne 1 ]; then
 fi
 
 message="$1"
-printf '%s' "$message" | pbcopy
 
-osascript <<'OSA'
-tell application "WeChat" to activate
-tell application "System Events"
-  key code 48
+osascript - "$message" <<'OSA'
+on run argv
+  if (count of argv) is not 1 then error "Expected exactly one message argument."
+
+  set messageText to item 1 of argv
+
+  tell application "WeChat" to activate
   delay 0.2
-  keystroke "a" using command down
-  key code 51
-  click menu bar item "编辑" of menu bar 1 of process "WeChat"
-  delay 0.2
-  click menu item "粘贴" of menu 1 of menu bar item "编辑" of menu bar 1 of process "WeChat"
-end tell
+
+  tell application "System Events"
+    tell process "WeChat"
+      set composerElement to missing value
+
+      repeat 5 times
+        set focusedElement to value of attribute "AXFocusedUIElement"
+        try
+          if value of attribute "AXRole" of focusedElement is "AXTextArea" then
+            set composerElement to focusedElement
+            exit repeat
+          end if
+        end try
+
+        key code 48
+        delay 0.15
+      end repeat
+
+      if composerElement is missing value then error "Could not focus the WeChat composer."
+
+      set value of attribute "AXValue" of composerElement to ""
+      delay 0.05
+      set value of attribute "AXValue" of composerElement to messageText
+    end tell
+  end tell
+end run
 OSA

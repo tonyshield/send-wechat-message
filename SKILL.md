@@ -1,6 +1,6 @@
 ---
 name: send-wechat-message
-description: Send or draft WeChat desktop messages on macOS through GUI automation, including opening WeChat, verifying Accessibility and Automation permissions, navigating the visible chat list, pasting exact Unicode text into the composer, capturing verification screenshots, and sending only after explicit user confirmation. Use when a user asks to open WeChat or 微信, send a message to a contact or another account, prepare a message before sending, confirm delivery with a screenshot, or troubleshoot Codex control of the macOS WeChat app.
+description: Send or draft WeChat desktop messages on macOS through GUI automation, including opening WeChat, verifying Accessibility and Automation permissions, navigating the visible chat list, writing exact Unicode text into the composer through AXValue, capturing verification screenshots, and sending only after explicit user confirmation. Use when a user asks to open WeChat or 微信, send a message to a contact or another account, prepare a message before sending, confirm delivery with a screenshot, or troubleshoot Codex control of the macOS WeChat app.
 ---
 
 # Send WeChat Message
@@ -15,7 +15,7 @@ Automate the macOS WeChat desktop client conservatively. Prefer deterministic GU
 2. Bring WeChat to the foreground and capture the current window.
 3. Identify whether the target conversation is already visible in the chat list.
 4. Prefer keyboard navigation in the visible chat list over mouse clicks.
-5. Open the target chat, focus the composer, and paste the exact message text.
+5. Open the target chat, focus the composer, and write the exact message text into the composer.
 6. Stop and ask for confirmation before sending.
 7. Send only after confirmation, then capture a proof screenshot.
 
@@ -56,7 +56,7 @@ After the correct chat is open:
 2. Use `scripts/focus_composer_and_paste.sh "<message>"` instead of simulated typing.
 3. Capture the window and verify that the exact text appears in the composer.
 
-Prefer clipboard-driven paste over direct keystroke typing for Chinese or mixed Unicode text. This avoids IME transformations such as punctuation changes or character substitutions.
+Prefer direct `AXValue` assignment over clipboard paste or simulated typing. This avoids IME transformations, candidate-bar interference, and cases where WeChat ignores `Command+V` even though the focus is already in the composer.
 
 ## Sending Policy
 
@@ -76,7 +76,7 @@ Return the screenshot path so the user can inspect or archive it.
 - `scripts/check_wechat_access.sh`: Verify that WeChat exists and that `System Events` can control it.
 - `scripts/capture_wechat_window.sh [output.png]`: Activate WeChat, detect the front window bounds, and capture a window screenshot.
 - `scripts/navigate_chat_list.sh <offset>`: Move the visible chat selection up or down with arrow keys.
-- `scripts/focus_composer_and_paste.sh "<message>"`: Focus the composer, clear the current draft, and paste exact clipboard text through the Edit menu.
+- `scripts/focus_composer_and_paste.sh "<message>"`: Focus the composer, clear the current draft, and write the exact text through the focused text area's `AXValue`.
 - `scripts/send_current_draft.sh`: Press Return in WeChat to send the currently visible draft.
 
 ## Troubleshooting
@@ -86,4 +86,5 @@ Read [references/troubleshooting.md](references/troubleshooting.md) when:
 - `osascript` reports Accessibility or Automation permission failures
 - WeChat opens but cannot be controlled
 - typed Chinese text is altered by the IME
+- `Command+V` or the Edit menu paste does not land in the composer
 - window screenshots are blank or capture the desktop instead of WeChat

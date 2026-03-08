@@ -41,6 +41,23 @@ Prefer:
 3. `scripts/navigate_chat_list.sh`
 4. screenshot verification
 
+## Paste Does Nothing
+
+You may have a valid focused `AXTextArea`, but WeChat still ignores `Command+V` or menu-driven paste. This is the failure mode seen in live testing.
+
+Preferred fix:
+
+- do not rely on paste events
+- write the draft directly with `AXValue`
+
+The shipped helper already does this:
+
+```bash
+scripts/focus_composer_and_paste.sh "<message>"
+```
+
+The filename is kept for compatibility, but the implementation now writes `AXValue` rather than pasting from the clipboard.
+
 ## Typed Chinese Text Changes Unexpectedly
 
 Direct simulated typing can be rewritten by the current IME. Typical failures include:
@@ -49,7 +66,7 @@ Direct simulated typing can be rewritten by the current IME. Typical failures in
 - romanized fragments
 - substituted Chinese characters
 
-Use `scripts/focus_composer_and_paste.sh "<message>"` so the final text is inserted from the clipboard through WeChat's Edit menu.
+Use `scripts/focus_composer_and_paste.sh "<message>"` so the final text is written directly into the focused WeChat composer.
 
 ## Screenshot Captures The Wrong Window
 
