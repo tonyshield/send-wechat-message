@@ -2,6 +2,10 @@
 set -euo pipefail
 
 out="${1:-$(mktemp -t wechat-window).png}"
+state_dir="${TMPDIR:-/tmp}/send-wechat-message"
+state_file="$state_dir/captures.txt"
+
+mkdir -p "$state_dir"
 
 open -a WeChat
 osascript -e 'tell application "WeChat" to activate' >/dev/null
@@ -33,4 +37,5 @@ OSA
 )"
 
 screencapture -x -R"$rect" "$out"
+printf '%s\n' "$out" >>"$state_file"
 printf '%s\n' "$out"

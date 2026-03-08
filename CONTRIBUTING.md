@@ -35,4 +35,5 @@ Before pushing to the public GitHub repository:
 - remove or generalize machine-specific absolute paths
 - do not commit screenshots from real chats
 - replace real names, group titles, and message text with generic placeholders
+- clean local temporary screenshots after validating live message flows
 - make sure new operating knowledge is reflected in `SKILL.md`, troubleshooting docs, and `CHANGELOG.md`

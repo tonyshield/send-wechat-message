@@ -82,6 +82,18 @@ If a group does not appear in the local result section:
 - or ask the user to open the group once manually
 - then retry the same search flow
 
+## Temporary Screenshots Accumulate
+
+The capture helper writes screenshots into the macOS temp directory and tracks them in a state file so they can be cleaned later.
+
+After the send has been verified, run:
+
+```bash
+scripts/cleanup_wechat_temp_screenshots.sh
+```
+
+This deletes tracked WeChat screenshots and clears the tracking file.
+
 ## Typed Chinese Text Changes Unexpectedly
 
 Direct simulated typing can be rewritten by the current IME. Typical failures include:

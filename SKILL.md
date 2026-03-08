@@ -19,6 +19,7 @@ Automate the macOS WeChat desktop client conservatively. Prefer deterministic GU
 6. Open the target chat, focus the composer, and write the exact message text into the composer.
 7. Stop and ask for confirmation before sending.
 8. Send only after confirmation, then capture a proof screenshot.
+9. Clean temporary screenshots after the user has seen the verification.
 
 ## Quick Start
 
@@ -82,9 +83,10 @@ Only after the user replies with clear approval such as "发送" or "send":
 ```bash
 scripts/send_current_draft.sh
 scripts/capture_wechat_window.sh
+scripts/cleanup_wechat_temp_screenshots.sh
 ```
 
-Return the screenshot path so the user can inspect or archive it.
+Return the screenshot path so the user can inspect it, then remove temporary screenshots once the verification is no longer needed.
 
 ## Iteration Policy
 
@@ -111,6 +113,7 @@ Before pushing any update to GitHub:
 3. Do not include personal contact names, chat titles, message contents, or IDs unless they are clearly synthetic.
 4. Keep user-facing examples generic and reusable.
 5. Prefer placeholders such as `/path/to/...`, `$HOME`, or `$CODEX_HOME`.
+6. Clean temporary screenshots after successful sends and verification.
 
 If a real interaction taught the workflow, capture the behavior generically and strip the personal context before publishing.
 
@@ -122,6 +125,7 @@ If a real interaction taught the workflow, capture the behavior generically and 
 - `scripts/focus_composer_and_set_value.sh "<message>"`: Focus the composer, clear the current draft, and write the exact text through the focused text area's `AXValue`.
 - `scripts/focus_composer_and_paste.sh "<message>"`: Backward-compatible wrapper that forwards to `focus_composer_and_set_value.sh`.
 - `scripts/send_current_draft.sh`: Press Return in WeChat to send the currently visible draft.
+- `scripts/cleanup_wechat_temp_screenshots.sh`: Delete tracked WeChat screenshots from the temp directory after verification.
 
 ## Troubleshooting
 
@@ -133,4 +137,5 @@ Read [references/troubleshooting.md](references/troubleshooting.md) when:
 - `Command+V` or the Edit menu paste does not land in the composer
 - WeChat search opens `搜一搜` instead of the local chat
 - a group chat cannot be found until local history is synced
+- temporary screenshots need to be cleaned after sending
 - window screenshots are blank or capture the desktop instead of WeChat

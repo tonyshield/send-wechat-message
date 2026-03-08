@@ -28,6 +28,7 @@ Live testing showed that WeChat may ignore clipboard paste even when the compose
 - `scripts/focus_composer_and_set_value.sh "<message>"`
 - `scripts/focus_composer_and_paste.sh "<message>"` (compatibility wrapper)
 - `scripts/send_current_draft.sh`
+- `scripts/cleanup_wechat_temp_screenshots.sh`
 
 ### Typical flow
 
@@ -38,9 +39,10 @@ scripts/navigate_chat_list.sh 1
 scripts/focus_composer_and_set_value.sh "hello from Codex"
 scripts/send_current_draft.sh
 scripts/capture_wechat_window.sh
+scripts/cleanup_wechat_temp_screenshots.sh
 ```
 
-Do not send automatically without explicit user confirmation.
+Do not send automatically without explicit user confirmation. After verification, clean temporary screenshots.
 
 ### Group chat and search notes
 
@@ -57,6 +59,7 @@ This repository is public. Published examples and docs should stay generic:
 - do not expose local usernames or absolute machine paths
 - do not publish real contact names or message contents unless intentionally anonymized
 - prefer reusable placeholders in examples
+- clean temporary screenshots after successful sends
 
 ## 中文
 
@@ -86,6 +89,7 @@ This repository is public. Published examples and docs should stay generic:
 - `scripts/focus_composer_and_set_value.sh "<message>"`
 - `scripts/focus_composer_and_paste.sh "<message>"`（兼容包装脚本）
 - `scripts/send_current_draft.sh`
+- `scripts/cleanup_wechat_temp_screenshots.sh`
 
 ### 典型流程
 
@@ -96,9 +100,10 @@ scripts/navigate_chat_list.sh 1
 scripts/focus_composer_and_set_value.sh "hello from Codex"
 scripts/send_current_draft.sh
 scripts/capture_wechat_window.sh
+scripts/cleanup_wechat_temp_screenshots.sh
 ```
 
-不要在没有用户明确确认的情况下自动发送。
+不要在没有用户明确确认的情况下自动发送。验证完成后，应及时清理临时截图。
 
 ### 群聊与搜索经验
 
@@ -115,3 +120,4 @@ scripts/capture_wechat_window.sh
 - 不要暴露本机用户名或绝对路径
 - 不要公开真实联系人名称或真实消息内容，除非已经明确做过匿名化
 - 示例里优先使用可复用的占位写法
+- 发送验证完成后应及时清理临时截图

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.6.0 - 2026-03-09
+
+- Added screenshot tracking in `capture_wechat_window.sh`.
+- Added `cleanup_wechat_temp_screenshots.sh` to delete temporary WeChat screenshots after verification.
+- Updated the skill docs and privacy guidance to require screenshot cleanup after successful sends.
+
 ## 0.5.0 - 2026-03-09
 
 - Added a formal iteration policy so new macOS WeChat behaviors are folded back into the skill.
