@@ -25,7 +25,8 @@ Live testing showed that WeChat may ignore clipboard paste even when the compose
 - `scripts/check_wechat_access.sh`
 - `scripts/capture_wechat_window.sh`
 - `scripts/navigate_chat_list.sh <offset>`
-- `scripts/focus_composer_and_paste.sh "<message>"`
+- `scripts/focus_composer_and_set_value.sh "<message>"`
+- `scripts/focus_composer_and_paste.sh "<message>"` (compatibility wrapper)
 - `scripts/send_current_draft.sh`
 
 ### Typical flow
@@ -34,7 +35,7 @@ Live testing showed that WeChat may ignore clipboard paste even when the compose
 scripts/check_wechat_access.sh
 scripts/capture_wechat_window.sh
 scripts/navigate_chat_list.sh 1
-scripts/focus_composer_and_paste.sh "hello from Codex"
+scripts/focus_composer_and_set_value.sh "hello from Codex"
 scripts/send_current_draft.sh
 scripts/capture_wechat_window.sh
 ```
@@ -66,7 +67,8 @@ Do not send automatically without explicit user confirmation.
 - `scripts/check_wechat_access.sh`
 - `scripts/capture_wechat_window.sh`
 - `scripts/navigate_chat_list.sh <offset>`
-- `scripts/focus_composer_and_paste.sh "<message>"`
+- `scripts/focus_composer_and_set_value.sh "<message>"`
+- `scripts/focus_composer_and_paste.sh "<message>"`（兼容包装脚本）
 - `scripts/send_current_draft.sh`
 
 ### 典型流程
@@ -75,7 +77,7 @@ Do not send automatically without explicit user confirmation.
 scripts/check_wechat_access.sh
 scripts/capture_wechat_window.sh
 scripts/navigate_chat_list.sh 1
-scripts/focus_composer_and_paste.sh "hello from Codex"
+scripts/focus_composer_and_set_value.sh "hello from Codex"
 scripts/send_current_draft.sh
 scripts/capture_wechat_window.sh
 ```

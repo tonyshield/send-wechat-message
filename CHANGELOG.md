@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.1 - 2026-03-09
+
+- Renamed the primary draft writer to `focus_composer_and_set_value.sh`.
+- Kept `focus_composer_and_paste.sh` as a compatibility wrapper.
+- Updated skill and README references to use the new script name.
+
 ## 0.3.0 - 2026-03-09
 
 - Switched message drafting from clipboard paste to direct `AXValue` assignment.

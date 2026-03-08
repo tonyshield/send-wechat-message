@@ -53,10 +53,10 @@ Preferred fix:
 The shipped helper already does this:
 
 ```bash
-scripts/focus_composer_and_paste.sh "<message>"
+scripts/focus_composer_and_set_value.sh "<message>"
 ```
 
-The filename is kept for compatibility, but the implementation now writes `AXValue` rather than pasting from the clipboard.
+The old `scripts/focus_composer_and_paste.sh` entry point is kept as a compatibility wrapper.
 
 ## Typed Chinese Text Changes Unexpectedly
 
@@ -66,7 +66,7 @@ Direct simulated typing can be rewritten by the current IME. Typical failures in
 - romanized fragments
 - substituted Chinese characters
 
-Use `scripts/focus_composer_and_paste.sh "<message>"` so the final text is written directly into the focused WeChat composer.
+Use `scripts/focus_composer_and_set_value.sh "<message>"` so the final text is written directly into the focused WeChat composer.
 
 ## Screenshot Captures The Wrong Window
 

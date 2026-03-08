@@ -53,7 +53,7 @@ This skill is optimized for the visible-chat path because WeChat exposes a spars
 After the correct chat is open:
 
 1. Focus the composer. In the current WeChat build, one `Tab` from the chat view usually lands in the message composer.
-2. Use `scripts/focus_composer_and_paste.sh "<message>"` instead of simulated typing.
+2. Use `scripts/focus_composer_and_set_value.sh "<message>"` instead of simulated typing.
 3. Capture the window and verify that the exact text appears in the composer.
 
 Prefer direct `AXValue` assignment over clipboard paste or simulated typing. This avoids IME transformations, candidate-bar interference, and cases where WeChat ignores `Command+V` even though the focus is already in the composer.
@@ -76,7 +76,8 @@ Return the screenshot path so the user can inspect or archive it.
 - `scripts/check_wechat_access.sh`: Verify that WeChat exists and that `System Events` can control it.
 - `scripts/capture_wechat_window.sh [output.png]`: Activate WeChat, detect the front window bounds, and capture a window screenshot.
 - `scripts/navigate_chat_list.sh <offset>`: Move the visible chat selection up or down with arrow keys.
-- `scripts/focus_composer_and_paste.sh "<message>"`: Focus the composer, clear the current draft, and write the exact text through the focused text area's `AXValue`.
+- `scripts/focus_composer_and_set_value.sh "<message>"`: Focus the composer, clear the current draft, and write the exact text through the focused text area's `AXValue`.
+- `scripts/focus_composer_and_paste.sh "<message>"`: Backward-compatible wrapper that forwards to `focus_composer_and_set_value.sh`.
 - `scripts/send_current_draft.sh`: Press Return in WeChat to send the currently visible draft.
 
 ## Troubleshooting
