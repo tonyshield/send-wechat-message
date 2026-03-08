@@ -1,0 +1,4 @@
+interface:
+  display_name: "Send WeChat Message"
+  short_description: "Send WeChat desktop messages on macOS"
+  default_prompt: "Use $send-wechat-message to open WeChat, prepare a message, and send only after confirmation."
