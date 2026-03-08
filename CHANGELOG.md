@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.1 - 2026-03-09
+
+- Moved the local symlink development workflow out of the public README.
+- Added `CONTRIBUTING.md` for repository-specific development notes.
+
 ## 0.4.0 - 2026-03-09
 
 - Added guidance for group-chat handling on macOS WeChat, including the requirement for local history before local search can select a group.
