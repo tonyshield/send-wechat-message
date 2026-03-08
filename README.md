@@ -49,6 +49,15 @@ Do not send automatically without explicit user confirmation.
 - Wait for the dropdown, move to the local result with arrow keys, then press Return.
 - Avoid mouse-based selection for fragile states; keyboard navigation is more reliable.
 
+### Privacy
+
+This repository is public. Published examples and docs should stay generic:
+
+- do not include real chat screenshots
+- do not expose local usernames or absolute machine paths
+- do not publish real contact names or message contents unless intentionally anonymized
+- prefer reusable placeholders in examples
+
 ## 中文
 
 `send-wechat-message` 是一个用于控制 macOS 微信桌面端的 Codex skill，基于辅助功能自动化。
@@ -97,3 +106,12 @@ scripts/capture_wechat_window.sh
 - 在搜索框输入后不要立刻回车。
 - 先等下拉结果出现，再用方向键选中本地结果后回车。
 - 在容易失焦的场景里，优先使用键盘导航，不要依赖鼠标点选。
+
+### 隐私约束
+
+这个仓库是公开的，文档和示例需要保持通用化：
+
+- 不要提交真实聊天截图
+- 不要暴露本机用户名或绝对路径
+- 不要公开真实联系人名称或真实消息内容，除非已经明确做过匿名化
+- 示例里优先使用可复用的占位写法

@@ -86,6 +86,34 @@ scripts/capture_wechat_window.sh
 
 Return the screenshot path so the user can inspect or archive it.
 
+## Iteration Policy
+
+Whenever a new macOS WeChat behavior is discovered in real use, fold that behavior back into this skill.
+
+Typical examples:
+
+- search and chat-selection edge cases
+- focus and composer-detection failures
+- IME or paste failures
+- send-key behavior differences
+- group-chat discovery constraints
+
+Update the relevant script, `SKILL.md`, troubleshooting notes, and release notes together so the skill remains the canonical record of operating knowledge.
+
+## Privacy And Publishing
+
+Treat this repository as public by default.
+
+Before pushing any update to GitHub:
+
+1. Remove local absolute paths that reveal usernames or machine-specific directories.
+2. Do not commit screenshots captured from real conversations.
+3. Do not include personal contact names, chat titles, message contents, or IDs unless they are clearly synthetic.
+4. Keep user-facing examples generic and reusable.
+5. Prefer placeholders such as `/path/to/...`, `$HOME`, or `$CODEX_HOME`.
+
+If a real interaction taught the workflow, capture the behavior generically and strip the personal context before publishing.
+
 ## Scripts
 
 - `scripts/check_wechat_access.sh`: Verify that WeChat exists and that `System Events` can control it.

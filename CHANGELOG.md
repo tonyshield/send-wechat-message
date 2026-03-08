@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.0 - 2026-03-09
+
+- Added a formal iteration policy so new macOS WeChat behaviors are folded back into the skill.
+- Added privacy and publication rules for the public GitHub repository.
+- Added a contributor publishing checklist to keep personal data out of the repo.
+
 ## 0.4.1 - 2026-03-09
 
 - Moved the local symlink development workflow out of the public README.
