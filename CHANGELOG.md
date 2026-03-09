@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.14.0 - 2026-03-09
 
 - Added `open_chat_and_draft_safely.sh` as a faster high-level helper that preserves the current guardrails while avoiding repeated viewport setup across separate scripts.
 - Optimized `open_chat_safely.sh` to reuse one captured state for current-title and visible-sidebar checks before falling back to search.
