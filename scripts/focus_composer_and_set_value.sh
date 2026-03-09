@@ -1,12 +1,16 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+script_dir="$(cd "$(dirname "$0")" && pwd)"
+
 if [ "$#" -ne 1 ]; then
   echo "Usage: $0 <message>" >&2
   exit 1
 fi
 
 message="$1"
+
+"$script_dir/prepare_wechat_viewport.sh"
 
 osascript - "$message" <<'OSA'
 on run argv

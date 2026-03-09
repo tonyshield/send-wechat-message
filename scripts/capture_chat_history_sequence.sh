@@ -2,6 +2,7 @@
 set -euo pipefail
 
 script_dir="$(cd "$(dirname "$0")" && pwd)"
+export WECHAT_VIEWPORT_PREPARED=0
 
 max_pages="${1:-20}"
 out_dir="${2:-}"
@@ -23,6 +24,9 @@ if [ -z "$out_dir" ]; then
 else
   mkdir -p "$out_dir"
 fi
+
+"$script_dir/prepare_wechat_viewport.sh"
+export WECHAT_VIEWPORT_PREPARED=1
 
 rect="$(
   osascript <<'OSA'

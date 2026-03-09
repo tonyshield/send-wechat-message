@@ -12,15 +12,16 @@ Automate the macOS WeChat desktop client conservatively. Prefer deterministic GU
 ## Workflow
 
 1. Verify that WeChat is installed and that Codex can control it.
-2. Bring WeChat to the foreground and capture the current window.
-3. Identify whether the target conversation is already visible in the chat list.
-4. Prefer keyboard navigation in the visible chat list over mouse clicks.
-5. If the target is a group chat, confirm it has local chat history before relying on search results.
-6. Open the target chat, focus the composer, and write the exact message text into the composer.
-7. Stop and ask for confirmation before sending.
-8. Send only after confirmation, then capture a proof screenshot.
-9. Clean temporary screenshots after the user has seen the verification.
-10. When the task is to read older messages, scroll the chat history upward in small increments and capture each checkpoint.
+2. Normalize the viewport by entering fullscreen if needed and zooming out to fit more content.
+3. Bring WeChat to the foreground and capture the current window.
+4. Identify whether the target conversation is already visible in the chat list.
+5. Prefer keyboard navigation in the visible chat list over mouse clicks.
+6. If the target is a group chat, confirm it has local chat history before relying on search results.
+7. Open the target chat, focus the composer, and write the exact message text into the composer.
+8. Stop and ask for confirmation before sending.
+9. Send only after confirmation, then capture a proof screenshot.
+10. Clean temporary screenshots after the user has seen the verification.
+11. When the task is to read older messages, scroll the chat history upward in small increments and capture each checkpoint.
 
 ## Quick Start
 
@@ -28,10 +29,13 @@ Run the helpers from the skill directory:
 
 ```bash
 scripts/check_wechat_access.sh
+scripts/prepare_wechat_viewport.sh
 scripts/capture_wechat_window.sh
 ```
 
 If both succeed, use the returned screenshot path with `view_image` to understand the current WeChat state before making further inputs.
+
+`scripts/prepare_wechat_viewport.sh` is safe to call repeatedly. It only toggles fullscreen when needed, then keeps zooming out until WeChat no longer offers another `缩小` step.
 
 ## Navigation Strategy
 
@@ -154,6 +158,7 @@ If a real interaction taught the workflow, capture the behavior generically and 
 ## Scripts
 
 - `scripts/check_wechat_access.sh`: Verify that WeChat exists and that `System Events` can control it.
+- `scripts/prepare_wechat_viewport.sh`: Enter fullscreen if needed and zoom out the WeChat viewport before further actions.
 - `scripts/capture_wechat_window.sh [output.png]`: Activate WeChat, detect the front window bounds, and capture a window screenshot.
 - `scripts/navigate_chat_list.sh <offset>`: Move the visible chat selection up or down with arrow keys.
 - `scripts/focus_composer_and_set_value.sh "<message>"`: Focus the composer, clear the current draft, and write the exact text through the focused text area's `AXValue`.

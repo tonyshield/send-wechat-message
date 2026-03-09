@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+script_dir="$(cd "$(dirname "$0")" && pwd)"
+
 if [ "$#" -ne 1 ]; then
   echo "Usage: $0 <offset>" >&2
   exit 1
@@ -18,6 +20,8 @@ esac
 if [ "$offset" -eq 0 ]; then
   exit 0
 fi
+
+"$script_dir/prepare_wechat_viewport.sh"
 
 if [ "$offset" -gt 0 ]; then
   keycode=125

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+script_dir="$(cd "$(dirname "$0")" && pwd)"
 steps="${1:-8}"
 pixels="${2:-180}"
 focus_x="${3:-}"
@@ -82,6 +83,8 @@ if [ "$dry_run" = "1" ]; then
   echo "Dry run: steps=$steps pixels=$pixels focus=($focus_x,$focus_y)"
   exit 0
 fi
+
+"$script_dir/prepare_wechat_viewport.sh"
 
 osascript -l JavaScript <<JXA
 ObjC.import('CoreGraphics')

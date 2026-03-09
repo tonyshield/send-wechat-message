@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+script_dir="$(cd "$(dirname "$0")" && pwd)"
 out="${1:-$(mktemp -t wechat-window).png}"
 state_dir="${TMPDIR:-/tmp}/send-wechat-message"
 state_file="$state_dir/captures.txt"
 
 mkdir -p "$state_dir"
 
-open -a WeChat
+"$script_dir/prepare_wechat_viewport.sh"
 osascript -e 'tell application "WeChat" to activate' >/dev/null
 sleep 0.2
 

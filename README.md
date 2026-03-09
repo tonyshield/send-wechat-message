@@ -7,6 +7,7 @@
 It is designed for a conservative workflow:
 
 - verify WeChat and permissions first
+- normalize the viewport before actions by entering fullscreen and zooming out
 - navigate visible chats with the keyboard
 - write the exact draft into the composer via `AXValue`
 - ask for explicit confirmation before sending
@@ -25,6 +26,7 @@ Live testing showed that WeChat may ignore clipboard paste even when the compose
 - `scripts/check_wechat_access.sh`
 - `scripts/capture_wechat_window.sh`
 - `scripts/navigate_chat_list.sh <offset>`
+- `scripts/prepare_wechat_viewport.sh`
 - `scripts/focus_composer_and_set_value.sh "<message>"`
 - `scripts/focus_composer_and_paste.sh "<message>"` (compatibility wrapper)
 - `scripts/scroll_chat_history.sh [steps] [pixels] [x] [y]`
@@ -45,6 +47,15 @@ scripts/cleanup_wechat_temp_screenshots.sh
 ```
 
 Do not send automatically without explicit user confirmation. After verification, clean temporary screenshots.
+
+### Viewport normalization
+
+Before capture, navigation, drafting, sending, or history scrolling, the skill now normalizes the WeChat viewport:
+
+- if WeChat is not fullscreen, it enters fullscreen with `Control+Command+F`
+- then it sends `Command+-` until the `缩小` menu item is no longer available
+
+This makes screenshots denser and keeps more conversation content visible per frame.
 
 ### Multiline messages
 
@@ -129,6 +140,7 @@ This repository is public. Published examples and docs should stay generic:
 - `scripts/check_wechat_access.sh`
 - `scripts/capture_wechat_window.sh`
 - `scripts/navigate_chat_list.sh <offset>`
+- `scripts/prepare_wechat_viewport.sh`
 - `scripts/focus_composer_and_set_value.sh "<message>"`
 - `scripts/focus_composer_and_paste.sh "<message>"`（兼容包装脚本）
 - `scripts/scroll_chat_history.sh [steps] [pixels] [x] [y]`
@@ -149,6 +161,15 @@ scripts/cleanup_wechat_temp_screenshots.sh
 ```
 
 不要在没有用户明确确认的情况下自动发送。验证完成后，应及时清理临时截图。
+
+### 视口归一化
+
+现在在截图、导航、写消息、发送、滚动历史之前，skill 会先归一化微信视口：
+
+- 如果当前不是全屏，就先用 `Control+Command+F` 进入全屏
+- 然后连续执行 `Command+-`，直到“显示”菜单里的 `缩小` 不再可用
+
+这样每张截图里能容纳更多聊天内容，历史审阅也更稳定。
 
 ### 多段消息与换行
 

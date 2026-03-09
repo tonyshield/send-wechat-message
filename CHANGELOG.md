@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.8.0 - 2026-03-09
+
+- Added `prepare_wechat_viewport.sh` to normalize WeChat into fullscreen and the smallest available display scale before operations.
+- Updated capture, navigation, drafting, sending, and history-scrolling scripts to use the normalized viewport.
+- Documented the fullscreen-and-zoom baseline in the skill, README, and troubleshooting guide.
+
 ## 0.7.1 - 2026-03-09
 
 - Documented the multiline message rule: pass real newline characters instead of literal `\n` sequences.

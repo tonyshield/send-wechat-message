@@ -41,6 +41,8 @@ Prefer:
 3. `scripts/navigate_chat_list.sh`
 4. screenshot verification
 
+The current skill also normalizes the viewport first, so the chat list and history pane are captured in fullscreen with the smallest available display scale.
+
 ## Paste Does Nothing
 
 You may have a valid focused `AXTextArea`, but WeChat still ignores `Command+V` or menu-driven paste. This is the failure mode seen in live testing.
@@ -173,3 +175,18 @@ scripts/capture_chat_history_sequence.sh 20
 ```
 
 It captures overlapping pages into a temporary directory and records hashes in `metadata.txt`. This is better suited for audit/review than ad hoc one-off captures.
+
+## Fullscreen Or Zoom Level Is Inconsistent
+
+If WeChat screenshots suddenly show less content than expected, run:
+
+```bash
+scripts/prepare_wechat_viewport.sh
+```
+
+The helper:
+
+- enters fullscreen only when `AXFullScreen` is false
+- then keeps sending `Command+-` until the `缩小` menu item is disabled
+
+This is the viewport baseline expected by the rest of the skill.
