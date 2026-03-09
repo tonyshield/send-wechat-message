@@ -33,6 +33,7 @@ Live testing showed that WeChat may ignore clipboard paste even when the compose
 - `scripts/open_chat_safely.sh "<chat name>"`
 - `scripts/search_chat_and_click_local_result.sh "<chat name>"`
 - `scripts/verify_current_chat_title_by_ocr.sh "<chat name>"`
+- `scripts/open_chat_and_draft_safely.sh "<chat name>" "<message>"`
 - `scripts/focus_composer_and_set_value.sh "<message>"`
 - `scripts/mention_group_member_and_set_value.sh "<member_name>" "<message>"`
 - `scripts/focus_composer_and_paste.sh "<message>"` (compatibility wrapper)
@@ -46,9 +47,7 @@ Live testing showed that WeChat may ignore clipboard paste even when the compose
 
 ```bash
 scripts/check_wechat_access.sh
-scripts/capture_wechat_window.sh
-scripts/open_chat_safely.sh "Alice"
-scripts/focus_composer_and_set_value.sh "hello from Codex"
+scripts/open_chat_and_draft_safely.sh "Alice" "hello from Codex"
 scripts/send_current_draft.sh
 scripts/capture_wechat_window.sh
 ```
@@ -56,6 +55,12 @@ scripts/capture_wechat_window.sh
 Do not send automatically without explicit user confirmation. After verification, ask the user whether those temporary screenshots should be cleaned.
 
 If chat verification fails, stop before drafting or sending.
+
+### Fast path
+
+For agent-driven sends, prefer `scripts/open_chat_and_draft_safely.sh "<chat name>" "<message>"`.
+
+It preserves the current chat-verification guardrails, but keeps the helper chain inside one process so the prepared viewport state can be reused instead of paying the setup cost repeatedly.
 
 ### Viewport normalization
 
@@ -177,6 +182,7 @@ This repository is public. Published examples and docs should stay generic:
 - `scripts/open_chat_safely.sh "<chat name>"`
 - `scripts/search_chat_and_click_local_result.sh "<chat name>"`
 - `scripts/verify_current_chat_title_by_ocr.sh "<chat name>"`
+- `scripts/open_chat_and_draft_safely.sh "<chat name>" "<message>"`
 - `scripts/focus_composer_and_set_value.sh "<message>"`
 - `scripts/mention_group_member_and_set_value.sh "<member_name>" "<message>"`
 - `scripts/focus_composer_and_paste.sh "<message>"`（兼容包装脚本）
@@ -190,14 +196,22 @@ This repository is public. Published examples and docs should stay generic:
 
 ```bash
 scripts/check_wechat_access.sh
-scripts/capture_wechat_window.sh
-scripts/open_chat_safely.sh "Alice"
-scripts/focus_composer_and_set_value.sh "hello from Codex"
+scripts/open_chat_and_draft_safely.sh "Alice" "hello from Codex"
 scripts/send_current_draft.sh
 scripts/capture_wechat_window.sh
 ```
 
 不要在没有用户明确确认的情况下自动发送。验证完成后，应该先问用户要不要清理这些临时截图。
+
+### 快速路径
+
+如果是 agent 驱动的直接发送，更适合优先用：
+
+```bash
+scripts/open_chat_and_draft_safely.sh "<chat name>" "<message>"
+```
+
+它保留了当前对象校验，但会在单个进程里复用已经准备好的视口，减少重复准备带来的耗时。
 
 ### 视口归一化
 
