@@ -30,7 +30,9 @@ Live testing showed that WeChat may ignore clipboard paste even when the compose
 - `scripts/ocr_wechat_screenshot.sh [--json] [--region left bottom width height] <image.png>`
 - `scripts/expand_visible_voice_transcripts.sh <image.png> [timeout_seconds]`
 - `scripts/find_chat_in_sidebar_by_ocr.sh "<chat name>" [max_scrolls]`
+- `scripts/open_chat_safely.sh "<chat name>"`
 - `scripts/search_chat_and_click_local_result.sh "<chat name>"`
+- `scripts/verify_current_chat_title_by_ocr.sh "<chat name>"`
 - `scripts/focus_composer_and_set_value.sh "<message>"`
 - `scripts/mention_group_member_and_set_value.sh "<member_name>" "<message>"`
 - `scripts/focus_composer_and_paste.sh "<message>"` (compatibility wrapper)
@@ -45,13 +47,15 @@ Live testing showed that WeChat may ignore clipboard paste even when the compose
 ```bash
 scripts/check_wechat_access.sh
 scripts/capture_wechat_window.sh
-scripts/navigate_chat_list.sh 1
+scripts/open_chat_safely.sh "Alice"
 scripts/focus_composer_and_set_value.sh "hello from Codex"
 scripts/send_current_draft.sh
 scripts/capture_wechat_window.sh
 ```
 
 Do not send automatically without explicit user confirmation. After verification, ask the user whether those temporary screenshots should be cleaned.
+
+If chat verification fails, stop before drafting or sending.
 
 ### Viewport normalization
 
@@ -91,6 +95,9 @@ The helper OCR-scans the visible `@` candidate list, clicks the matching member,
 ### Group chat and search notes
 
 - Group chats are searchable only after local history exists on the current Mac WeChat client.
+- Prefer `scripts/open_chat_safely.sh "<chat name>"` as the default entry.
+- It first checks the current chat, then tries the currently visible home-page sidebar list, and only falls back to search if the target is not visible there.
+- Before drafting or sending, verify the active chat again with `scripts/verify_current_chat_title_by_ocr.sh "<chat name>"`.
 - Prefer `scripts/search_chat_and_click_local_result.sh "<chat name>"` for direct chats and already-synced group chats.
 - The helper uses `Command+F` to lock the search box, writes the query through `AXValue`, and OCR-clicks the top local result.
 - In search, do not press Return immediately after entering text.
@@ -167,7 +174,9 @@ This repository is public. Published examples and docs should stay generic:
 - `scripts/ocr_wechat_screenshot.sh [--json] [--region left bottom width height] <image.png>`
 - `scripts/expand_visible_voice_transcripts.sh <image.png> [timeout_seconds]`
 - `scripts/find_chat_in_sidebar_by_ocr.sh "<chat name>" [max_scrolls]`
+- `scripts/open_chat_safely.sh "<chat name>"`
 - `scripts/search_chat_and_click_local_result.sh "<chat name>"`
+- `scripts/verify_current_chat_title_by_ocr.sh "<chat name>"`
 - `scripts/focus_composer_and_set_value.sh "<message>"`
 - `scripts/mention_group_member_and_set_value.sh "<member_name>" "<message>"`
 - `scripts/focus_composer_and_paste.sh "<message>"`（兼容包装脚本）
@@ -182,7 +191,7 @@ This repository is public. Published examples and docs should stay generic:
 ```bash
 scripts/check_wechat_access.sh
 scripts/capture_wechat_window.sh
-scripts/navigate_chat_list.sh 1
+scripts/open_chat_safely.sh "Alice"
 scripts/focus_composer_and_set_value.sh "hello from Codex"
 scripts/send_current_draft.sh
 scripts/capture_wechat_window.sh
@@ -230,6 +239,9 @@ scripts/mention_group_member_and_set_value.sh "老妈" "现在这条消息是AI�
 ### 群聊与搜索经验
 
 - 群聊只有在当前 Mac 微信已经同步到本地历史后，才比较容易被本地搜索命中。
+- 默认入口优先用 `scripts/open_chat_safely.sh "<chat name>"`。
+- 它会先检查当前会话，再检查左侧首页当前可见的会话列表；只有首页看不到目标对象时，才会退到搜索。
+- 在写消息和发送前，先用 `scripts/verify_current_chat_title_by_ocr.sh "<chat name>"` 再校验一次当前对象。
 - 直聊和已同步历史的群聊，优先用 `scripts/search_chat_and_click_local_result.sh "<chat name>"`。
 - 这个脚本会先用 `Command+F` 锁定搜索框，再通过 `AXValue` 写入查询词，并用 OCR 点中顶部本地结果。
 - 在搜索框输入后不要立刻回车。

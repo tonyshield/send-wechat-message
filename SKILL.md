@@ -43,8 +43,9 @@ Prefer these controls in this order:
 
 1. `Command+1` to switch WeChat to the chat list.
 2. `scripts/capture_wechat_window.sh` to inspect which chat is currently selected.
-3. `scripts/navigate_chat_list.sh <offset>` to move from the current selection to a visible target chat.
-4. Capture again and verify the title area matches the intended recipient.
+3. Prefer `scripts/open_chat_safely.sh "<chat name>"` before drafting or sending.
+4. This first checks whether the current chat already matches, then prefers the visible home-page sidebar list, and only falls back to search if the target is not visible there.
+5. Capture again and verify the title area matches the intended recipient.
 
 Use mouse clicks only as a fallback. In this app version, synthetic mouse events may hover a row without selecting it, while arrow-key navigation is reliable.
 
@@ -59,14 +60,22 @@ This skill is optimized for the visible-chat path because WeChat exposes a spars
 
 When the target chat is not visible:
 
-1. Prefer:
+1. The default high-level entry is:
+
+```bash
+scripts/open_chat_safely.sh "<chat name>"
+```
+
+2. This first checks the current chat, then tries a visible match in the current home-page sidebar list without scrolling.
+3. Only if that fails should it fall back to search.
+4. The lower-level search helper remains:
 
 ```bash
 scripts/search_chat_and_click_local_result.sh "<chat name>"
 ```
 
-2. This uses `Command+F` to focus WeChat search, writes the query through the focused search field's `AXValue`, waits for the dropdown to render, and OCR-clicks the top local result.
-3. Pressing Return is no longer the preferred path because it may open `搜一搜` instead of the local result.
+5. This uses `Command+F` to focus WeChat search, writes the query through the focused search field's `AXValue`, waits for the dropdown to render, and OCR-clicks the top local result.
+6. Pressing Return is no longer the preferred path because it may open `搜一搜` instead of the local result.
 
 Do not press Return immediately after typing into search. In the current macOS WeChat build, that often opens the separate `搜一搜` window instead of the local chat result.
 
@@ -79,6 +88,14 @@ scripts/find_chat_in_sidebar_by_ocr.sh "<chat name>"
 This scans the visible left chat list with OCR, scrolls that list downward if needed, and clicks the first matching visible row.
 
 For group chats, local search works reliably only when the group already has local history on the current Mac. If the group is missing, ask the user to sync or open the group once manually before retrying.
+
+Before drafting or sending any message, verify the current target object with:
+
+```bash
+scripts/verify_current_chat_title_by_ocr.sh "<chat name>"
+```
+
+If this fails, do not draft and do not send.
 
 ## Drafting The Message
 
@@ -155,6 +172,8 @@ scripts/capture_wechat_window.sh
 
 Return the screenshot path so the user can inspect it, then ask whether those temporary screenshots should be cleaned. Run `scripts/cleanup_wechat_temp_screenshots.sh` only after the user explicitly asks to delete them.
 
+If the active chat cannot be re-verified, stop before sending. Wrong-recipient prevention is a hard guardrail.
+
 ## Iteration Policy
 
 Whenever a new macOS WeChat behavior is discovered in real use, fold that behavior back into this skill.
@@ -192,7 +211,9 @@ If a real interaction taught the workflow, capture the behavior generically and 
 - `scripts/ocr_wechat_screenshot.sh [--json] [--region left bottom width height] <image.png>`: Extract ordered OCR lines from a WeChat screenshot, optionally constrained to a normalized region.
 - `scripts/expand_visible_voice_transcripts.sh <image.png> [timeout_seconds]`: Best-effort click visible `转文字` buttons and wait for transcript text to settle.
 - `scripts/find_chat_in_sidebar_by_ocr.sh "<chat name>" [max_scrolls]`: Scan the left chat list with OCR and click the first visible matching chat row.
+- `scripts/open_chat_safely.sh "<chat name>"`: Prefer the visible home-page sidebar entry, fall back to search only if needed, and require OCR title verification before success.
 - `scripts/search_chat_and_click_local_result.sh "<chat name>"`: Focus the WeChat search box with `Command+F`, write the query through `AXValue`, and OCR-click the top local result.
+- `scripts/verify_current_chat_title_by_ocr.sh "<chat name>"`: Capture the current window and verify the active chat title via OCR before drafting or sending.
 - `scripts/navigate_chat_list.sh <offset>`: Move the visible chat selection up or down with arrow keys.
 - `scripts/focus_composer_and_set_value.sh "<message>"`: Focus the composer, clear the current draft, and write the exact text through the focused text area's `AXValue`.
 - `scripts/mention_group_member_and_set_value.sh "<member_name>" "<message>"`: In a group chat, open the `@` picker, OCR-click a visible member candidate, and append the body text through `AXValue`.

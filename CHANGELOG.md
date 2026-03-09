@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.13.0 - 2026-03-09
+
+- Added `open_chat_safely.sh` to make visible-sidebar selection the default chat-opening path and fall back to search only when the target is not visible on the current home-page list.
+- Added `verify_current_chat_title_by_ocr.sh` so drafting and sending can be blocked unless the active chat title matches the intended target.
+- Updated the docs to treat wrong-recipient prevention as a hard guardrail.
+
 ## 0.12.0 - 2026-03-09
 
 - Added `search_chat_and_click_local_result.sh` to make `Command+F` plus `AXValue` search-box control the default chat-selection path.

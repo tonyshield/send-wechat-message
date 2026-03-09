@@ -67,6 +67,14 @@ If you type a query and immediately press Return, WeChat may open the separate `
 Preferred fix:
 
 ```bash
+scripts/open_chat_safely.sh "<chat name>"
+```
+
+This first checks whether the current chat already matches, then prefers a visible match in the current home-page sidebar list, and only falls back to search if the target is not visible there.
+
+Lower-level search helper:
+
+```bash
 scripts/search_chat_and_click_local_result.sh "<chat name>"
 ```
 
@@ -81,6 +89,20 @@ scripts/find_chat_in_sidebar_by_ocr.sh "<chat name>"
 ```
 
 This scans the visible left chat list with OCR, scrolls that list if needed, and clicks the first matching visible chat row.
+
+## Wrong Recipient Risk Is Too High
+
+Before drafting or sending, verify the active chat explicitly:
+
+```bash
+scripts/verify_current_chat_title_by_ocr.sh "<chat name>"
+```
+
+If this fails, do not send. Re-open the target with:
+
+```bash
+scripts/open_chat_safely.sh "<chat name>"
+```
 
 ## Group Chat Cannot Be Found
 
