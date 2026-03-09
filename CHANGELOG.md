@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.15.0 - 2026-03-09
+
+- Refactored common OCR+click helpers into `scripts/lib_wechat_ui.sh` and updated chat-selection and mention scripts to use the shared library.
+
 ## 0.14.0 - 2026-03-09
 
 - Added `open_chat_and_draft_safely.sh` as a faster high-level helper that preserves the current guardrails while avoiding repeated viewport setup across separate scripts.
