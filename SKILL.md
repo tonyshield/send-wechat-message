@@ -89,6 +89,14 @@ Prefer direct `AXValue` assignment over clipboard paste or simulated typing. Thi
 
 If the draft needs line breaks, pass real newline characters. Do not build the message as a plain single-quoted shell string containing literal `\n`, because WeChat will receive those characters verbatim.
 
+For group-chat `@mentions`, do not keep typing the mention target and the body through the IME after opening the `@` picker. A more stable path is:
+
+```bash
+scripts/mention_group_member_and_set_value.sh "老妈" "现在这条消息是AI发出来的"
+```
+
+This opens the `@` picker, uses OCR to click the visible member candidate, then appends the body through the composer's `AXValue` so the IME cannot corrupt the message text.
+
 ## Reading History
 
 When the task is to inspect older messages in a chat:
@@ -183,6 +191,7 @@ If a real interaction taught the workflow, capture the behavior generically and 
 - `scripts/find_chat_in_sidebar_by_ocr.sh "<chat name>" [max_scrolls]`: Scan the left chat list with OCR and click the first visible matching chat row.
 - `scripts/navigate_chat_list.sh <offset>`: Move the visible chat selection up or down with arrow keys.
 - `scripts/focus_composer_and_set_value.sh "<message>"`: Focus the composer, clear the current draft, and write the exact text through the focused text area's `AXValue`.
+- `scripts/mention_group_member_and_set_value.sh "<member_name>" "<message>"`: In a group chat, open the `@` picker, OCR-click a visible member candidate, and append the body text through `AXValue`.
 - `scripts/focus_composer_and_paste.sh "<message>"`: Backward-compatible wrapper that forwards to `focus_composer_and_set_value.sh`.
 - `scripts/scroll_chat_history.sh [steps] [pixels] [x] [y]`: Focus the chat body and scroll older history upward in pixel increments derived from the window size when omitted.
 - `scripts/capture_chat_history_sequence.sh [max_pages] [out_dir]`: Capture overlapping screenshots of older chat history into a temporary directory, defaulting to `100` pages per batch.

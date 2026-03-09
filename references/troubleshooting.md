@@ -114,6 +114,18 @@ Direct simulated typing can be rewritten by the current IME. Typical failures in
 
 Use `scripts/focus_composer_and_set_value.sh "<message>"` so the final text is written directly into the focused WeChat composer.
 
+## Group `@` Mention Text Gets Corrupted
+
+In group chats, once the `@` picker is open, continuing to type the member name and the body through the current IME may corrupt the draft.
+
+Preferred fix:
+
+```bash
+scripts/mention_group_member_and_set_value.sh "老妈" "现在这条消息是AI发出来的"
+```
+
+This helper OCR-scans the visible `@` picker, clicks the matching member candidate, then appends the rest of the message through `AXValue`.
+
 ## Literal `\n` Appears In The Draft
 
 The composer helper accepts real newline characters, but it will not reinterpret backslash escapes for you.

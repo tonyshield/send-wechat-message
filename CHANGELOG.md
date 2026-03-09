@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.11.0 - 2026-03-09
+
+- Added `mention_group_member_and_set_value.sh` to handle group-chat `@mentions` without letting the IME corrupt the body text.
+- Documented the stable `@member + AXValue body` workflow in the skill, README, and troubleshooting guide.
+
 ## 0.10.0 - 2026-03-09
 
 - Added `find_chat_in_sidebar_by_ocr.sh` as a fallback when WeChat search opens `搜一搜` or otherwise fails to select the intended local chat.
