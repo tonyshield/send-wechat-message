@@ -28,6 +28,7 @@ Live testing showed that WeChat may ignore clipboard paste even when the compose
 - `scripts/focus_composer_and_set_value.sh "<message>"`
 - `scripts/focus_composer_and_paste.sh "<message>"` (compatibility wrapper)
 - `scripts/scroll_chat_history.sh [steps] [pixels] [x] [y]`
+- `scripts/capture_chat_history_sequence.sh [max_pages] [out_dir]`
 - `scripts/send_current_draft.sh`
 - `scripts/cleanup_wechat_temp_screenshots.sh`
 
@@ -67,6 +68,14 @@ scripts/capture_wechat_window.sh
 
 The helper computes a default focus point inside the chat-history pane, so you usually do not need to pass coordinates manually.
 
+For a whole review set, capture a sequence into a temporary directory:
+
+```bash
+scripts/capture_chat_history_sequence.sh 20
+```
+
+This uses overlapping screenshots and stops when the viewport no longer changes.
+
 ### Privacy
 
 This repository is public. Published examples and docs should stay generic:
@@ -105,6 +114,7 @@ This repository is public. Published examples and docs should stay generic:
 - `scripts/focus_composer_and_set_value.sh "<message>"`
 - `scripts/focus_composer_and_paste.sh "<message>"`（兼容包装脚本）
 - `scripts/scroll_chat_history.sh [steps] [pixels] [x] [y]`
+- `scripts/capture_chat_history_sequence.sh [max_pages] [out_dir]`
 - `scripts/send_current_draft.sh`
 - `scripts/cleanup_wechat_temp_screenshots.sh`
 
@@ -143,6 +153,14 @@ scripts/capture_wechat_window.sh
 ```
 
 脚本会自动计算聊天正文区域的焦点位置，通常不需要手动传坐标。
+
+如果要把整段历史截图下来给人审核，更适合直接跑：
+
+```bash
+scripts/capture_chat_history_sequence.sh 20
+```
+
+它会在临时目录里生成一组带重叠的历史截图，并在滚不动时自动停下。
 
 ### 隐私约束
 

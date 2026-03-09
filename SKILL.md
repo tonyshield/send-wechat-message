@@ -98,6 +98,14 @@ Use a larger `steps` count only after confirming the direction and density of me
 
 The scroll helper computes a default focus point inside the chat-history pane. Override the coordinates only when the window layout is unusual.
 
+For continuous review of a whole chat history, prefer:
+
+```bash
+scripts/capture_chat_history_sequence.sh 20
+```
+
+This captures a sequence of overlapping screenshots into a temporary directory, scrolling by a conservative amount each round so the previous top content moves downward instead of jumping out of view.
+
 ## Sending Policy
 
 Always stop after the draft is visible and ask for explicit user confirmation.
@@ -149,6 +157,7 @@ If a real interaction taught the workflow, capture the behavior generically and 
 - `scripts/focus_composer_and_set_value.sh "<message>"`: Focus the composer, clear the current draft, and write the exact text through the focused text area's `AXValue`.
 - `scripts/focus_composer_and_paste.sh "<message>"`: Backward-compatible wrapper that forwards to `focus_composer_and_set_value.sh`.
 - `scripts/scroll_chat_history.sh [steps] [pixels] [x] [y]`: Focus the chat body and scroll older history upward in measured pixel increments.
+- `scripts/capture_chat_history_sequence.sh [max_pages] [out_dir]`: Capture overlapping screenshots of older chat history into a temporary directory for manual review.
 - `scripts/send_current_draft.sh`: Press Return in WeChat to send the currently visible draft.
 - `scripts/cleanup_wechat_temp_screenshots.sh`: Delete tracked WeChat screenshots from the temp directory after verification.
 

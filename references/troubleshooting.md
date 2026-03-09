@@ -135,3 +135,13 @@ If scrolling still does nothing, the focus point may have landed outside the cha
 ```bash
 scripts/scroll_chat_history.sh 8 180 520 300
 ```
+
+## Need A Reviewable Screenshot Set
+
+When you need to review a whole chat history manually, use the sequence capture helper:
+
+```bash
+scripts/capture_chat_history_sequence.sh 20
+```
+
+It captures overlapping pages into a temporary directory and records hashes in `metadata.txt`. This is better suited for audit/review than ad hoc one-off captures.

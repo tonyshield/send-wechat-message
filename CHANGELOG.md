@@ -6,6 +6,7 @@
 - Documented the proven history-reading pattern: focus the chat body, use small pixel-based scroll increments, and capture each checkpoint.
 - Documented that `Page Up` is unreliable for reading older messages in macOS WeChat.
 - Updated history scrolling to compute the chat-body focus point from the active WeChat window instead of relying on a fixed coordinate.
+- Added `capture_chat_history_sequence.sh` to collect a reviewable, overlapping screenshot set in a temporary directory.
 
 ## 0.6.0 - 2026-03-09
 
