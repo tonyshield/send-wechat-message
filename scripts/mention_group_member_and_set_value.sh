@@ -49,8 +49,13 @@ OSA
 
 shot_file="$("$script_dir/capture_wechat_window.sh")"
 
-coords="$(
-  "$script_dir/ocr_wechat_screenshot.sh" --json --region 0.30 0.00 0.69 0.30 "$shot_file" | \
+find_candidate_coords() {
+  local region_left="$1"
+  local region_bottom="$2"
+  local region_width="$3"
+  local region_height="$4"
+
+  "$script_dir/ocr_wechat_screenshot.sh" --json --region "$region_left" "$region_bottom" "$region_width" "$region_height" "$shot_file" | \
     MEMBER_NAME="$member_name" python3 -c '
 import json
 import os
@@ -81,7 +86,17 @@ if not candidates:
 _, _, _, item = sorted(candidates)[0]
 print("{x},{y},{w},{h}".format(x=item["x"], y=item["y"], w=item["w"], h=item["h"]))
 '
+}
+
+coords="$(
+  find_candidate_coords 0.22 0.05 0.18 0.24
 )"
+
+if [ -z "$coords" ]; then
+  coords="$(
+    find_candidate_coords 0.18 0.03 0.26 0.30
+  )"
+fi
 
 if [ -z "$coords" ]; then
   echo "Could not find group member in visible @ mention candidates: $member_name" >&2

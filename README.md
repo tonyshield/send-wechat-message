@@ -34,6 +34,7 @@ Live testing showed that WeChat may ignore clipboard paste even when the compose
 - `scripts/search_chat_and_click_local_result.sh "<chat name>"`
 - `scripts/verify_current_chat_title_by_ocr.sh "<chat name>"`
 - `scripts/open_chat_and_draft_safely.sh "<chat name>" "<message>"`
+- `scripts/open_chat_mention_and_send_safely.sh "<chat name>" "<member name>" "<message>"`
 - `scripts/focus_composer_and_set_value.sh "<message>"`
 - `scripts/mention_group_member_and_set_value.sh "<member_name>" "<message>"`
 - `scripts/focus_composer_and_paste.sh "<message>"` (compatibility wrapper)
@@ -61,6 +62,10 @@ If chat verification fails, stop before drafting or sending.
 For agent-driven sends, prefer `scripts/open_chat_and_draft_safely.sh "<chat name>" "<message>"`.
 
 It preserves the current chat-verification guardrails, but keeps the helper chain inside one process so the prepared viewport state can be reused instead of paying the setup cost repeatedly.
+
+For group-chat `@mentions`, prefer `scripts/open_chat_mention_and_send_safely.sh "<chat name>" "<member name>" "<message>"`.
+
+It keeps the same verified-open flow, then resolves the visible `@` picker candidate inside the lower-left popup instead of relying on IME typing.
 
 ### Viewport normalization
 
@@ -183,6 +188,7 @@ This repository is public. Published examples and docs should stay generic:
 - `scripts/search_chat_and_click_local_result.sh "<chat name>"`
 - `scripts/verify_current_chat_title_by_ocr.sh "<chat name>"`
 - `scripts/open_chat_and_draft_safely.sh "<chat name>" "<message>"`
+- `scripts/open_chat_mention_and_send_safely.sh "<chat name>" "<member name>" "<message>"`
 - `scripts/focus_composer_and_set_value.sh "<message>"`
 - `scripts/mention_group_member_and_set_value.sh "<member_name>" "<message>"`
 - `scripts/focus_composer_and_paste.sh "<message>"`（兼容包装脚本）
@@ -212,6 +218,14 @@ scripts/open_chat_and_draft_safely.sh "<chat name>" "<message>"
 ```
 
 它保留了当前对象校验，但会在单个进程里复用已经准备好的视口，减少重复准备带来的耗时。
+
+如果是群聊里 `@` 某个成员，更适合优先用：
+
+```bash
+scripts/open_chat_mention_and_send_safely.sh "<chat name>" "<member name>" "<message>"
+```
+
+它沿用同样的会话校验护栏，并在左下角 `@` 候选弹层里 OCR 点击可见成员，而不是继续依赖输入法逐字输入。
 
 ### 视口归一化
 

@@ -4,6 +4,8 @@
 
 - Added `open_chat_and_draft_safely.sh` as a faster high-level helper that preserves the current guardrails while avoiding repeated viewport setup across separate scripts.
 - Optimized `open_chat_safely.sh` to reuse one captured state for current-title and visible-sidebar checks before falling back to search.
+- Fixed `mention_group_member_and_set_value.sh` to OCR the visible lower-left `@` picker popup instead of the wrong window region.
+- Added `open_chat_mention_and_send_safely.sh` as a faster verified path for group-chat `@mentions`.
 
 ## 0.13.0 - 2026-03-09
 
