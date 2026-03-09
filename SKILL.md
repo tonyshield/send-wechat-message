@@ -29,13 +29,17 @@ Run the helpers from the skill directory:
 
 ```bash
 scripts/check_wechat_access.sh
-scripts/prepare_wechat_viewport.sh
+scripts/open_chat_and_draft_safely.sh "Alice" "hello from Codex"
 scripts/capture_wechat_window.sh
 ```
 
 If both succeed, use the returned screenshot path with `view_image` to understand the current WeChat state before making further inputs.
 
 `scripts/prepare_wechat_viewport.sh` is safe to call repeatedly. It only toggles fullscreen when needed, then keeps zooming out until WeChat no longer offers another `缩小` step.
+
+For performance-sensitive agent flows, prefer `scripts/open_chat_and_draft_safely.sh` over stitching `open_chat_safely.sh` and `focus_composer_and_set_value.sh` separately. It preserves the same guardrails while reusing a single prepared viewport within one process.
+
+For performance-sensitive group-chat `@mentions`, prefer `scripts/open_chat_mention_and_send_safely.sh`. It keeps the verified-open guardrails, then resolves the visible `@` picker candidate from the lower-left popup before sending.
 
 ## Navigation Strategy
 
@@ -214,6 +218,8 @@ If a real interaction taught the workflow, capture the behavior generically and 
 - `scripts/open_chat_safely.sh "<chat name>"`: Prefer the visible home-page sidebar entry, fall back to search only if needed, and require OCR title verification before success.
 - `scripts/search_chat_and_click_local_result.sh "<chat name>"`: Focus the WeChat search box with `Command+F`, write the query through `AXValue`, and OCR-click the top local result.
 - `scripts/verify_current_chat_title_by_ocr.sh "<chat name>"`: Capture the current window and verify the active chat title via OCR before drafting or sending.
+- `scripts/open_chat_and_draft_safely.sh "<chat name>" "<message>"`: Open a verified chat and write the draft in one process to reduce repeated setup overhead.
+- `scripts/open_chat_mention_and_send_safely.sh "<chat name>" "<member_name>" "<message>"`: Open a verified group chat, resolve a visible `@` picker candidate, append the message body, and send within one prepared process.
 - `scripts/navigate_chat_list.sh <offset>`: Move the visible chat selection up or down with arrow keys.
 - `scripts/focus_composer_and_set_value.sh "<message>"`: Focus the composer, clear the current draft, and write the exact text through the focused text area's `AXValue`.
 - `scripts/mention_group_member_and_set_value.sh "<member_name>" "<message>"`: In a group chat, open the `@` picker, OCR-click a visible member candidate, and append the body text through `AXValue`.
