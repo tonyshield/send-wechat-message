@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.10.0 - 2026-03-09
+
+- Added `find_chat_in_sidebar_by_ocr.sh` as a fallback when WeChat search opens `搜一搜` or otherwise fails to select the intended local chat.
+- Added normalized region support to `ocr_wechat_screenshot.sh`.
+- Restricted history OCR extraction to the active conversation pane instead of the full WeChat window.
+- Added `conversation-merged.txt` output and `merge_ocr_pages.py` to combine page OCR files into a single overlap-deduplicated reference transcript.
+
 ## 0.9.0 - 2026-03-09
 
 - Stopped treating screenshot cleanup as automatic workflow; the user should now explicitly decide whether to keep or delete temporary screenshots.

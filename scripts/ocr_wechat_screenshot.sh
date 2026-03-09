@@ -2,14 +2,44 @@
 set -euo pipefail
 
 json_mode=0
+region_left=""
+region_bottom=""
+region_width=""
+region_height=""
 
-if [ "${1:-}" = "--json" ]; then
-  json_mode=1
-  shift
-fi
+while [ "$#" -gt 0 ]; do
+  case "${1:-}" in
+    --json)
+      json_mode=1
+      shift
+      ;;
+    --region)
+      if [ "$#" -lt 5 ]; then
+        echo "Usage: $0 [--json] [--region left bottom width height] <image.png>" >&2
+        exit 1
+      fi
+      region_left="$2"
+      region_bottom="$3"
+      region_width="$4"
+      region_height="$5"
+      shift 5
+      ;;
+    --)
+      shift
+      break
+      ;;
+    -*)
+      echo "Unknown option: $1" >&2
+      exit 1
+      ;;
+    *)
+      break
+      ;;
+  esac
+done
 
 if [ "$#" -ne 1 ]; then
-  echo "Usage: $0 [--json] <image.png>" >&2
+  echo "Usage: $0 [--json] [--region left bottom width height] <image.png>" >&2
   exit 1
 fi
 
@@ -20,7 +50,19 @@ if [ ! -f "$image_path" ]; then
   exit 1
 fi
 
-osascript -l JavaScript - "$image_path" "$json_mode" <<'JXA'
+for value in "$region_left" "$region_bottom" "$region_width" "$region_height"; do
+  if [ -n "$value" ] && ! printf '%s' "$value" | grep -Eq '^[0-9]+([.][0-9]+)?$'; then
+    echo "region values must be numeric between 0 and 1" >&2
+    exit 1
+  fi
+done
+
+if [ -n "$region_left" ] && [ -z "$region_height" ]; then
+  echo "region requires left bottom width height" >&2
+  exit 1
+fi
+
+osascript -l JavaScript - "$image_path" "$json_mode" "${region_left:-}" "${region_bottom:-}" "${region_width:-}" "${region_height:-}" <<'JXA'
 ObjC.import('Foundation')
 ObjC.import('Vision')
 ObjC.import('CoreImage')
@@ -46,6 +88,13 @@ function scriptArgs() {
 function main(argv) {
   const imagePath = argv[0]
   const jsonMode = argv[1] === '1'
+  const hasRegion = argv[2] !== ''
+  const region = hasRegion ? {
+    left: Number(argv[2]),
+    bottom: Number(argv[3]),
+    width: Number(argv[4]),
+    height: Number(argv[5])
+  } : null
   const imageURL = $.NSURL.fileURLWithPath(imagePath)
   const ciImage = $.CIImage.imageWithContentsOfURL(imageURL)
 
@@ -82,12 +131,30 @@ function main(argv) {
     }
 
     const box = observation.boundingBox
-    items.push({
+    const item = {
       text,
       x: toNumber(box.origin.x),
       y: toNumber(box.origin.y),
       w: toNumber(box.size.width),
       h: toNumber(box.size.height)
+    }
+
+    if (region) {
+      const centerX = item.x + item.w / 2
+      const centerY = item.y + item.h / 2
+      const withinX = centerX >= region.left && centerX <= region.left + region.width
+      const withinY = centerY >= region.bottom && centerY <= region.bottom + region.height
+      if (!withinX || !withinY) {
+        continue
+      }
+    }
+
+    items.push({
+      text: item.text,
+      x: item.x,
+      y: item.y,
+      w: item.w,
+      h: item.h
     })
   }
 

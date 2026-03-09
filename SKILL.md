@@ -67,6 +67,14 @@ When the target chat is not visible:
 
 Do not press Return immediately after typing into search. In the current macOS WeChat build, that often opens the separate `搜一搜` window instead of the local chat result.
 
+If search becomes unstable, IME behavior mutates the query, or WeChat keeps escaping into `搜一搜`, fall back to:
+
+```bash
+scripts/find_chat_in_sidebar_by_ocr.sh "<chat name>"
+```
+
+This scans the visible left chat list with OCR, scrolls that list downward if needed, and clicks the first matching visible row.
+
 For group chats, local search works reliably only when the group already has local history on the current Mac. If the group is missing, ask the user to sync or open the group once manually before retrying.
 
 ## Drafting The Message
@@ -118,8 +126,10 @@ The sequence helper also:
 
 - adapts the scroll distance to the current window size
 - uses OCR to best-effort click visible `转文字` buttons before the final page capture
+- restricts OCR extraction to the current conversation pane instead of the full WeChat window
 - writes per-page OCR text into `ocr/`
 - builds `conversation-reference.md` in the same folder for later review
+- writes `conversation-merged.txt` with simple overlap-based deduplication across pages
 
 ## Sending Policy
 
@@ -159,7 +169,7 @@ Before pushing any update to GitHub:
 3. Do not include personal contact names, chat titles, message contents, or IDs unless they are clearly synthetic.
 4. Keep user-facing examples generic and reusable.
 5. Prefer placeholders such as `/path/to/...`, `$HOME`, or `$CODEX_HOME`.
-6. Clean temporary screenshots after successful sends and verification.
+6. Ask before cleaning temporary screenshots after successful sends and verification.
 
 If a real interaction taught the workflow, capture the behavior generically and strip the personal context before publishing.
 
@@ -168,13 +178,15 @@ If a real interaction taught the workflow, capture the behavior generically and 
 - `scripts/check_wechat_access.sh`: Verify that WeChat exists and that `System Events` can control it.
 - `scripts/prepare_wechat_viewport.sh`: Enter fullscreen if needed and zoom out the WeChat viewport before further actions.
 - `scripts/capture_wechat_window.sh [output.png]`: Activate WeChat, detect the front window bounds, and capture a window screenshot.
-- `scripts/ocr_wechat_screenshot.sh [--json] <image.png>`: Extract ordered OCR lines from a WeChat screenshot.
+- `scripts/ocr_wechat_screenshot.sh [--json] [--region left bottom width height] <image.png>`: Extract ordered OCR lines from a WeChat screenshot, optionally constrained to a normalized region.
 - `scripts/expand_visible_voice_transcripts.sh <image.png> [timeout_seconds]`: Best-effort click visible `转文字` buttons and wait for transcript text to settle.
+- `scripts/find_chat_in_sidebar_by_ocr.sh "<chat name>" [max_scrolls]`: Scan the left chat list with OCR and click the first visible matching chat row.
 - `scripts/navigate_chat_list.sh <offset>`: Move the visible chat selection up or down with arrow keys.
 - `scripts/focus_composer_and_set_value.sh "<message>"`: Focus the composer, clear the current draft, and write the exact text through the focused text area's `AXValue`.
 - `scripts/focus_composer_and_paste.sh "<message>"`: Backward-compatible wrapper that forwards to `focus_composer_and_set_value.sh`.
 - `scripts/scroll_chat_history.sh [steps] [pixels] [x] [y]`: Focus the chat body and scroll older history upward in pixel increments derived from the window size when omitted.
 - `scripts/capture_chat_history_sequence.sh [max_pages] [out_dir]`: Capture overlapping screenshots of older chat history into a temporary directory, defaulting to `100` pages per batch.
+- `scripts/merge_ocr_pages.py <output.txt> <page-001.txt> [...]`: Merge per-page OCR text files into a single overlap-deduplicated reference transcript.
 - `scripts/send_current_draft.sh`: Press Return in WeChat to send the currently visible draft.
 - `scripts/cleanup_wechat_temp_screenshots.sh`: Delete tracked WeChat screenshots from the temp directory after verification.
 

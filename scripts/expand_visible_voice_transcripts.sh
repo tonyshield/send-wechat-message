@@ -62,7 +62,7 @@ win_y="$2"
 win_w="$3"
 win_h="$4"
 
-ocr_json="$("$script_dir/ocr_wechat_screenshot.sh" --json "$image_path")"
+ocr_json="$("$script_dir/ocr_wechat_screenshot.sh" --json --region 0.30 0.11 0.69 0.80 "$image_path")"
 
 coords="$(
   printf '%s\n' "$ocr_json" | python3 -c '
@@ -161,7 +161,7 @@ for _ in $(seq 1 "$timeout_seconds"); do
   previous_hash="$current_hash"
 
   remaining_count="$(
-    "$script_dir/ocr_wechat_screenshot.sh" --json "$probe_image" | python3 -c '
+    "$script_dir/ocr_wechat_screenshot.sh" --json --region 0.30 0.11 0.69 0.80 "$probe_image" | python3 -c '
 import json
 import sys
 

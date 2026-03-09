@@ -74,6 +74,14 @@ Preferred fix:
 
 If `搜一搜` already opened, close that window and retry.
 
+If the search query keeps getting mangled, the local result never highlights correctly, or `搜一搜` keeps taking over, fall back to:
+
+```bash
+scripts/find_chat_in_sidebar_by_ocr.sh "<chat name>"
+```
+
+This scans the visible left chat list with OCR, scrolls that list if needed, and clicks the first matching visible chat row.
+
 ## Group Chat Cannot Be Found
 
 On macOS WeChat, group chats may not be selectable from search unless the current machine already has local history for that group.
@@ -174,7 +182,7 @@ When you need to review a whole chat history manually, use the sequence capture 
 scripts/capture_chat_history_sequence.sh
 ```
 
-It captures overlapping pages into a temporary directory and records hashes in `metadata.txt`. It now defaults to `100` pages per batch, writes OCR output into `ocr/`, and creates `conversation-reference.md` for later review.
+It captures overlapping pages into a temporary directory and records hashes in `metadata.txt`. It now defaults to `100` pages per batch, writes OCR output from the current conversation pane into `ocr/`, creates `conversation-reference.md` for page-by-page review, and builds `conversation-merged.txt` as a simple merged transcript reference.
 
 If `metadata.txt` says the batch reached `max_pages` without finding the stable top, ask the user whether to continue with another batch.
 
@@ -198,7 +206,7 @@ Then recapture the page.
 
 ## OCR Reference Text Looks Noisy
 
-`conversation-reference.md` and `ocr/page-*.txt` are OCR-derived reference files, not authoritative exports. Expect:
+`conversation-reference.md`, `conversation-merged.txt`, and `ocr/page-*.txt` are OCR-derived reference files, not authoritative exports. Expect:
 
 - overlap duplicates between adjacent pages
 - imperfect recognition on emojis, images, and low-contrast text

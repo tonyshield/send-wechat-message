@@ -27,12 +27,14 @@ Live testing showed that WeChat may ignore clipboard paste even when the compose
 - `scripts/capture_wechat_window.sh`
 - `scripts/navigate_chat_list.sh <offset>`
 - `scripts/prepare_wechat_viewport.sh`
-- `scripts/ocr_wechat_screenshot.sh [--json] <image.png>`
+- `scripts/ocr_wechat_screenshot.sh [--json] [--region left bottom width height] <image.png>`
 - `scripts/expand_visible_voice_transcripts.sh <image.png> [timeout_seconds]`
+- `scripts/find_chat_in_sidebar_by_ocr.sh "<chat name>" [max_scrolls]`
 - `scripts/focus_composer_and_set_value.sh "<message>"`
 - `scripts/focus_composer_and_paste.sh "<message>"` (compatibility wrapper)
 - `scripts/scroll_chat_history.sh [steps] [pixels] [x] [y]`
 - `scripts/capture_chat_history_sequence.sh [max_pages] [out_dir]`
+- `scripts/merge_ocr_pages.py <output.txt> <page-001.txt> [...]`
 - `scripts/send_current_draft.sh`
 - `scripts/cleanup_wechat_temp_screenshots.sh`
 
@@ -82,6 +84,7 @@ scripts/focus_composer_and_set_value.sh "$msg"
 - In search, do not press Return immediately after entering text.
 - Wait for the dropdown, move to the local result with arrow keys, then press Return.
 - Avoid mouse-based selection for fragile states; keyboard navigation is more reliable.
+- If search becomes unstable, use `scripts/find_chat_in_sidebar_by_ocr.sh "<chat name>"` to scan the visible left chat list with OCR and click the first matching row.
 
 ### Reading chat history
 
@@ -108,8 +111,9 @@ This now defaults to `100` pages per batch. If the batch ends before the stable 
 
 The output folder also includes:
 
-- `ocr/` with per-page OCR text
+- `ocr/` with per-page OCR text from the current conversation pane only
 - `conversation-reference.md` with page-by-page extracted text for reference
+- `conversation-merged.txt` with overlap-deduplicated merged text across the captured pages
 
 When a visible voice message exposes a `转文字` control, the sequence helper will best-effort click it, wait for the transcript text to settle, and then recapture that page.
 
@@ -149,12 +153,14 @@ This repository is public. Published examples and docs should stay generic:
 - `scripts/capture_wechat_window.sh`
 - `scripts/navigate_chat_list.sh <offset>`
 - `scripts/prepare_wechat_viewport.sh`
-- `scripts/ocr_wechat_screenshot.sh [--json] <image.png>`
+- `scripts/ocr_wechat_screenshot.sh [--json] [--region left bottom width height] <image.png>`
 - `scripts/expand_visible_voice_transcripts.sh <image.png> [timeout_seconds]`
+- `scripts/find_chat_in_sidebar_by_ocr.sh "<chat name>" [max_scrolls]`
 - `scripts/focus_composer_and_set_value.sh "<message>"`
 - `scripts/focus_composer_and_paste.sh "<message>"`（兼容包装脚本）
 - `scripts/scroll_chat_history.sh [steps] [pixels] [x] [y]`
 - `scripts/capture_chat_history_sequence.sh [max_pages] [out_dir]`
+- `scripts/merge_ocr_pages.py <output.txt> <page-001.txt> [...]`
 - `scripts/send_current_draft.sh`
 - `scripts/cleanup_wechat_temp_screenshots.sh`
 
@@ -206,6 +212,7 @@ scripts/focus_composer_and_set_value.sh "$msg"
 - 在搜索框输入后不要立刻回车。
 - 先等下拉结果出现，再用方向键选中本地结果后回车。
 - 在容易失焦的场景里，优先使用键盘导航，不要依赖鼠标点选。
+- 如果搜索本身不稳，就改用 `scripts/find_chat_in_sidebar_by_ocr.sh "<chat name>"`，它会 OCR 扫描左侧会话列表并点击第一个匹配项。
 
 ### 读取历史消息
 
@@ -232,8 +239,9 @@ scripts/capture_chat_history_sequence.sh
 
 输出目录里还会包含：
 
-- `ocr/`：每页截图对应的 OCR 文本
+- `ocr/`：每页截图中仅当前对话正文区域的 OCR 文本
 - `conversation-reference.md`：按页汇总的提取文本，便于后续参考
+- `conversation-merged.txt`：把这一批页面做简单重叠去重后的合并文本
 
 如果截图里能识别到语音消息的 `转文字` 按钮，脚本会尽力先点开它、等待文字返回，再重拍这一页。
 

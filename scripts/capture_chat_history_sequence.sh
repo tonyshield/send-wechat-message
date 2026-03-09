@@ -27,6 +27,7 @@ fi
 
 ocr_dir="$out_dir/ocr"
 reference_file="$out_dir/conversation-reference.md"
+merged_file="$out_dir/conversation-merged.txt"
 mkdir -p "$ocr_dir"
 
 "$script_dir/prepare_wechat_viewport.sh"
@@ -78,21 +79,30 @@ if [ "$scroll_pixels" -lt 120 ]; then
   scroll_pixels=120
 fi
 
+# Restrict OCR to the current conversation pane and exclude the left sidebar.
+ocr_region_left="0.30"
+ocr_region_bottom="0.11"
+ocr_region_width="0.69"
+ocr_region_height="0.80"
+
 meta_file="$out_dir/metadata.txt"
 {
   echo "window=$rect"
   echo "focus=($focus_x,$focus_y)"
   echo "scroll_pixels=$scroll_pixels"
   echo "max_pages=$max_pages"
+  echo "ocr_region=$ocr_region_left,$ocr_region_bottom,$ocr_region_width,$ocr_region_height"
 } >"$meta_file"
 
 {
   echo "# Conversation Reference"
   echo
   echo "- source: overlapping WeChat screenshots"
-  echo "- note: OCR output is best effort and may contain overlap duplicates between adjacent pages"
+  echo "- note: OCR output is restricted to the current conversation pane and is still best effort"
   echo
 } >"$reference_file"
+
+: >"$merged_file"
 
 last_hash=""
 reached_stable_top=0
@@ -118,7 +128,9 @@ for page in $(seq 1 "$max_pages"); do
   last_hash="$current_hash"
 
   ocr_out_file="$(printf '%s/page-%03d.txt' "$ocr_dir" "$page")"
-  "$script_dir/ocr_wechat_screenshot.sh" "$out_file" >"$ocr_out_file"
+  "$script_dir/ocr_wechat_screenshot.sh" \
+    --region "$ocr_region_left" "$ocr_region_bottom" "$ocr_region_width" "$ocr_region_height" \
+    "$out_file" >"$ocr_out_file"
   {
     echo "## page-$(printf '%03d' "$page")"
     echo
@@ -138,6 +150,13 @@ done
 
 if [ "$reached_stable_top" -eq 0 ]; then
   echo "Reached max_pages without finding the stable top. Ask the user whether to continue." >>"$meta_file"
+fi
+
+set +e
+page_files=("$ocr_dir"/page-*.txt)
+set -e
+if [ -e "${page_files[0]:-}" ]; then
+  "$script_dir/merge_ocr_pages.py" "$merged_file" "${page_files[@]}"
 fi
 
 printf '%s\n' "$out_dir"
