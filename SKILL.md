@@ -75,6 +75,8 @@ After the correct chat is open:
 
 Prefer direct `AXValue` assignment over clipboard paste or simulated typing. This avoids IME transformations, candidate-bar interference, and cases where WeChat ignores `Command+V` even though the focus is already in the composer.
 
+If the draft needs line breaks, pass real newline characters. Do not build the message as a plain single-quoted shell string containing literal `\n`, because WeChat will receive those characters verbatim.
+
 ## Reading History
 
 When the task is to inspect older messages in a chat:

@@ -46,6 +46,24 @@ scripts/cleanup_wechat_temp_screenshots.sh
 
 Do not send automatically without explicit user confirmation. After verification, clean temporary screenshots.
 
+### Multiline messages
+
+`focus_composer_and_set_value.sh` accepts real newline characters. Do not pass literal `\n` sequences inside a plain single-quoted shell string, or WeChat will receive backslash-and-n as text.
+
+Prefer one of these forms:
+
+```bash
+msg=$'First paragraph\n\nSecond paragraph'
+scripts/focus_composer_and_set_value.sh "$msg"
+```
+
+```bash
+msg='First paragraph
+
+Second paragraph'
+scripts/focus_composer_and_set_value.sh "$msg"
+```
+
 ### Group chat and search notes
 
 - Group chats are searchable only after local history exists on the current Mac WeChat client.
@@ -131,6 +149,26 @@ scripts/cleanup_wechat_temp_screenshots.sh
 ```
 
 不要在没有用户明确确认的情况下自动发送。验证完成后，应及时清理临时截图。
+
+### 多段消息与换行
+
+`focus_composer_and_set_value.sh` 支持真实换行。不要把字面量 `\n` 放进普通单引号 shell 字符串里，否则微信里看到的就会是反斜杠和 `n`。
+
+推荐这样传：
+
+```bash
+msg=$'第一段\n\n第二段'
+scripts/focus_composer_and_set_value.sh "$msg"
+```
+
+或者直接传真实多行文本：
+
+```bash
+msg='第一段
+
+第二段'
+scripts/focus_composer_and_set_value.sh "$msg"
+```
 
 ### 群聊与搜索经验
 

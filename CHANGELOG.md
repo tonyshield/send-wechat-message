@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.7.1 - 2026-03-09
+
+- Documented the multiline message rule: pass real newline characters instead of literal `\n` sequences.
+- Added examples in the README and troubleshooting guide for shell-safe multiline drafting.
+
 ## 0.7.0 - 2026-03-09
 
 - Added `scroll_chat_history.sh` for controlled WeChat history reading.

@@ -104,6 +104,34 @@ Direct simulated typing can be rewritten by the current IME. Typical failures in
 
 Use `scripts/focus_composer_and_set_value.sh "<message>"` so the final text is written directly into the focused WeChat composer.
 
+## Literal `\n` Appears In The Draft
+
+The composer helper accepts real newline characters, but it will not reinterpret backslash escapes for you.
+
+This is wrong:
+
+```bash
+msg='First paragraph\n\nSecond paragraph'
+```
+
+Preferred fixes:
+
+```bash
+msg=$'First paragraph\n\nSecond paragraph'
+scripts/focus_composer_and_set_value.sh "$msg"
+```
+
+or:
+
+```bash
+msg='First paragraph
+
+Second paragraph'
+scripts/focus_composer_and_set_value.sh "$msg"
+```
+
+If WeChat shows the characters `\n` literally, the shell already built the wrong string before it reached `AXValue`.
+
 ## Screenshot Captures The Wrong Window
 
 Use `scripts/capture_wechat_window.sh` instead of raw `screencapture`. The helper activates WeChat, reads the current window bounds through accessibility, and captures only that rectangle.
