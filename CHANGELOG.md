@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.9.0 - 2026-03-09
+
+- Stopped treating screenshot cleanup as automatic workflow; the user should now explicitly decide whether to keep or delete temporary screenshots.
+- Increased history capture batches to `100` pages by default and record when another batch is needed.
+- Added OCR extraction for WeChat screenshots, including `ocr/` page files and `conversation-reference.md`.
+- Added best-effort voice transcript expansion by detecting and clicking visible `转文字` controls before the final page capture.
+- Updated history scrolling defaults to derive pixel distance from the current window size when omitted.
+
 ## 0.8.0 - 2026-03-09
 
 - Added `prepare_wechat_viewport.sh` to normalize WeChat into fullscreen and the smallest available display scale before operations.

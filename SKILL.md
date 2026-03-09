@@ -20,7 +20,7 @@ Automate the macOS WeChat desktop client conservatively. Prefer deterministic GU
 7. Open the target chat, focus the composer, and write the exact message text into the composer.
 8. Stop and ask for confirmation before sending.
 9. Send only after confirmation, then capture a proof screenshot.
-10. Clean temporary screenshots after the user has seen the verification.
+10. Do not clean temporary screenshots automatically; ask the user whether to keep or delete them.
 11. When the task is to read older messages, scroll the chat history upward in small increments and capture each checkpoint.
 
 ## Quick Start
@@ -96,9 +96,11 @@ Prefer many small scrolls over a few large jumps. In live testing, moderate pixe
 Recommended starting command:
 
 ```bash
-scripts/scroll_chat_history.sh 8 180
+scripts/scroll_chat_history.sh 8
 scripts/capture_wechat_window.sh
 ```
+
+If `pixels` is omitted, the scroll helper derives it from the current window height.
 
 Use a larger `steps` count only after confirming the direction and density of messages in the current chat.
 
@@ -107,10 +109,17 @@ The scroll helper computes a default focus point inside the chat-history pane. O
 For continuous review of a whole chat history, prefer:
 
 ```bash
-scripts/capture_chat_history_sequence.sh 20
+scripts/capture_chat_history_sequence.sh
 ```
 
-This captures a sequence of overlapping screenshots into a temporary directory, scrolling by a conservative amount each round so the previous top content moves downward instead of jumping out of view.
+This now defaults to `100` pages per batch. If the script reaches that limit without finding the stable top, stop and ask the user whether to continue.
+
+The sequence helper also:
+
+- adapts the scroll distance to the current window size
+- uses OCR to best-effort click visible `转文字` buttons before the final page capture
+- writes per-page OCR text into `ocr/`
+- builds `conversation-reference.md` in the same folder for later review
 
 ## Sending Policy
 
@@ -121,10 +130,9 @@ Only after the user replies with clear approval such as "发送" or "send":
 ```bash
 scripts/send_current_draft.sh
 scripts/capture_wechat_window.sh
-scripts/cleanup_wechat_temp_screenshots.sh
 ```
 
-Return the screenshot path so the user can inspect it, then remove temporary screenshots once the verification is no longer needed.
+Return the screenshot path so the user can inspect it, then ask whether those temporary screenshots should be cleaned. Run `scripts/cleanup_wechat_temp_screenshots.sh` only after the user explicitly asks to delete them.
 
 ## Iteration Policy
 
@@ -160,11 +168,13 @@ If a real interaction taught the workflow, capture the behavior generically and 
 - `scripts/check_wechat_access.sh`: Verify that WeChat exists and that `System Events` can control it.
 - `scripts/prepare_wechat_viewport.sh`: Enter fullscreen if needed and zoom out the WeChat viewport before further actions.
 - `scripts/capture_wechat_window.sh [output.png]`: Activate WeChat, detect the front window bounds, and capture a window screenshot.
+- `scripts/ocr_wechat_screenshot.sh [--json] <image.png>`: Extract ordered OCR lines from a WeChat screenshot.
+- `scripts/expand_visible_voice_transcripts.sh <image.png> [timeout_seconds]`: Best-effort click visible `转文字` buttons and wait for transcript text to settle.
 - `scripts/navigate_chat_list.sh <offset>`: Move the visible chat selection up or down with arrow keys.
 - `scripts/focus_composer_and_set_value.sh "<message>"`: Focus the composer, clear the current draft, and write the exact text through the focused text area's `AXValue`.
 - `scripts/focus_composer_and_paste.sh "<message>"`: Backward-compatible wrapper that forwards to `focus_composer_and_set_value.sh`.
-- `scripts/scroll_chat_history.sh [steps] [pixels] [x] [y]`: Focus the chat body and scroll older history upward in measured pixel increments.
-- `scripts/capture_chat_history_sequence.sh [max_pages] [out_dir]`: Capture overlapping screenshots of older chat history into a temporary directory for manual review.
+- `scripts/scroll_chat_history.sh [steps] [pixels] [x] [y]`: Focus the chat body and scroll older history upward in pixel increments derived from the window size when omitted.
+- `scripts/capture_chat_history_sequence.sh [max_pages] [out_dir]`: Capture overlapping screenshots of older chat history into a temporary directory, defaulting to `100` pages per batch.
 - `scripts/send_current_draft.sh`: Press Return in WeChat to send the currently visible draft.
 - `scripts/cleanup_wechat_temp_screenshots.sh`: Delete tracked WeChat screenshots from the temp directory after verification.
 

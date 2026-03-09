@@ -3,7 +3,7 @@ set -euo pipefail
 
 script_dir="$(cd "$(dirname "$0")" && pwd)"
 steps="${1:-8}"
-pixels="${2:-180}"
+pixels="${2:-0}"
 focus_x="${3:-}"
 focus_y="${4:-}"
 dry_run="${SCROLL_CHAT_HISTORY_DRY_RUN:-0}"
@@ -22,7 +22,7 @@ case "$pixels" in
     ;;
 esac
 
-if [ -z "$focus_x" ] || [ -z "$focus_y" ]; then
+if [ -z "$focus_x" ] || [ -z "$focus_y" ] || [ "$pixels" -le 0 ]; then
   rect="$(
   osascript <<'OSA'
 tell application "System Events"
@@ -56,8 +56,18 @@ OSA
   win_y="$2"
   win_w="$3"
   win_h="$4"
-  focus_x=$(( win_x + (win_w * 62 / 100) ))
-  focus_y=$(( win_y + (win_h * 32 / 100) ))
+
+  if [ "$pixels" -le 0 ]; then
+    pixels=$(( win_h * 18 / 100 ))
+    if [ "$pixels" -lt 120 ]; then
+      pixels=120
+    fi
+  fi
+
+  if [ -z "$focus_x" ] || [ -z "$focus_y" ]; then
+    focus_x=$(( win_x + (win_w * 62 / 100) ))
+    focus_y=$(( win_y + (win_h * 32 / 100) ))
+  fi
 fi
 
 case "$focus_x" in

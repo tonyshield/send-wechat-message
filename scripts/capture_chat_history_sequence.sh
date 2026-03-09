@@ -4,7 +4,7 @@ set -euo pipefail
 script_dir="$(cd "$(dirname "$0")" && pwd)"
 export WECHAT_VIEWPORT_PREPARED=0
 
-max_pages="${1:-20}"
+max_pages="${1:-100}"
 out_dir="${2:-}"
 
 case "$max_pages" in
@@ -24,6 +24,10 @@ if [ -z "$out_dir" ]; then
 else
   mkdir -p "$out_dir"
 fi
+
+ocr_dir="$out_dir/ocr"
+reference_file="$out_dir/conversation-reference.md"
+mkdir -p "$ocr_dir"
 
 "$script_dir/prepare_wechat_viewport.sh"
 export WECHAT_VIEWPORT_PREPARED=1
@@ -82,26 +86,58 @@ meta_file="$out_dir/metadata.txt"
   echo "max_pages=$max_pages"
 } >"$meta_file"
 
+{
+  echo "# Conversation Reference"
+  echo
+  echo "- source: overlapping WeChat screenshots"
+  echo "- note: OCR output is best effort and may contain overlap duplicates between adjacent pages"
+  echo
+} >"$reference_file"
+
 last_hash=""
+reached_stable_top=0
 
 for page in $(seq 1 "$max_pages"); do
   out_file=$(printf '%s/page-%03d.png' "$out_dir" "$page")
   "$script_dir/capture_wechat_window.sh" "$out_file" >/dev/null
+  voice_clicks="$("$script_dir/expand_visible_voice_transcripts.sh" "$out_file" "${WECHAT_VOICE_TRANSCRIPT_TIMEOUT_SECONDS:-8}")"
+  if [ "${voice_clicks:-0}" -gt 0 ]; then
+    "$script_dir/capture_wechat_window.sh" "$out_file" >/dev/null
+  fi
   current_hash=$(md5 -q "$out_file")
-  echo "$(basename "$out_file") $current_hash" >>"$meta_file"
+  echo "$(basename "$out_file") $current_hash voice_transcript_clicks=${voice_clicks:-0}" >>"$meta_file"
 
   if [ -n "$last_hash" ] && [ "$current_hash" = "$last_hash" ]; then
     rm -f -- "$out_file"
+    rm -f -- "$(printf '%s/page-%03d.txt' "$ocr_dir" "$page")"
     echo "Reached stable top or no further movement at page $((page - 1))." >>"$meta_file"
+    reached_stable_top=1
     break
   fi
 
   last_hash="$current_hash"
+
+  ocr_out_file="$(printf '%s/page-%03d.txt' "$ocr_dir" "$page")"
+  "$script_dir/ocr_wechat_screenshot.sh" "$out_file" >"$ocr_out_file"
+  {
+    echo "## page-$(printf '%03d' "$page")"
+    echo
+    echo "![page-$(printf '%03d' "$page")]($(basename "$out_file"))"
+    echo
+    echo '```text'
+    cat "$ocr_out_file"
+    echo '```'
+    echo
+  } >>"$reference_file"
 
   if [ "$page" -lt "$max_pages" ]; then
     "$script_dir/scroll_chat_history.sh" 1 "$scroll_pixels" "$focus_x" "$focus_y" >/dev/null
     sleep 0.6
   fi
 done
+
+if [ "$reached_stable_top" -eq 0 ]; then
+  echo "Reached max_pages without finding the stable top. Ask the user whether to continue." >>"$meta_file"
+fi
 
 printf '%s\n' "$out_dir"

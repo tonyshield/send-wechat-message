@@ -27,6 +27,8 @@ Live testing showed that WeChat may ignore clipboard paste even when the compose
 - `scripts/capture_wechat_window.sh`
 - `scripts/navigate_chat_list.sh <offset>`
 - `scripts/prepare_wechat_viewport.sh`
+- `scripts/ocr_wechat_screenshot.sh [--json] <image.png>`
+- `scripts/expand_visible_voice_transcripts.sh <image.png> [timeout_seconds]`
 - `scripts/focus_composer_and_set_value.sh "<message>"`
 - `scripts/focus_composer_and_paste.sh "<message>"` (compatibility wrapper)
 - `scripts/scroll_chat_history.sh [steps] [pixels] [x] [y]`
@@ -43,10 +45,9 @@ scripts/navigate_chat_list.sh 1
 scripts/focus_composer_and_set_value.sh "hello from Codex"
 scripts/send_current_draft.sh
 scripts/capture_wechat_window.sh
-scripts/cleanup_wechat_temp_screenshots.sh
 ```
 
-Do not send automatically without explicit user confirmation. After verification, clean temporary screenshots.
+Do not send automatically without explicit user confirmation. After verification, ask the user whether those temporary screenshots should be cleaned.
 
 ### Viewport normalization
 
@@ -91,19 +92,26 @@ scripts/focus_composer_and_set_value.sh "$msg"
 Example:
 
 ```bash
-scripts/scroll_chat_history.sh 8 180
+scripts/scroll_chat_history.sh 8
 scripts/capture_wechat_window.sh
 ```
 
-The helper computes a default focus point inside the chat-history pane, so you usually do not need to pass coordinates manually.
+The helper computes a default focus point inside the chat-history pane, and if `pixels` is omitted it derives the scroll length from the current window height.
 
 For a whole review set, capture a sequence into a temporary directory:
 
 ```bash
-scripts/capture_chat_history_sequence.sh 20
+scripts/capture_chat_history_sequence.sh
 ```
 
-This uses overlapping screenshots and stops when the viewport no longer changes.
+This now defaults to `100` pages per batch. If the batch ends before the stable top is reached, ask the user whether to continue.
+
+The output folder also includes:
+
+- `ocr/` with per-page OCR text
+- `conversation-reference.md` with page-by-page extracted text for reference
+
+When a visible voice message exposes a `转文字` control, the sequence helper will best-effort click it, wait for the transcript text to settle, and then recapture that page.
 
 ### Privacy
 
@@ -113,7 +121,7 @@ This repository is public. Published examples and docs should stay generic:
 - do not expose local usernames or absolute machine paths
 - do not publish real contact names or message contents unless intentionally anonymized
 - prefer reusable placeholders in examples
-- clean temporary screenshots after successful sends
+- clean temporary screenshots only after the user explicitly asks for cleanup
 
 ## 中文
 
@@ -141,6 +149,8 @@ This repository is public. Published examples and docs should stay generic:
 - `scripts/capture_wechat_window.sh`
 - `scripts/navigate_chat_list.sh <offset>`
 - `scripts/prepare_wechat_viewport.sh`
+- `scripts/ocr_wechat_screenshot.sh [--json] <image.png>`
+- `scripts/expand_visible_voice_transcripts.sh <image.png> [timeout_seconds]`
 - `scripts/focus_composer_and_set_value.sh "<message>"`
 - `scripts/focus_composer_and_paste.sh "<message>"`（兼容包装脚本）
 - `scripts/scroll_chat_history.sh [steps] [pixels] [x] [y]`
@@ -157,10 +167,9 @@ scripts/navigate_chat_list.sh 1
 scripts/focus_composer_and_set_value.sh "hello from Codex"
 scripts/send_current_draft.sh
 scripts/capture_wechat_window.sh
-scripts/cleanup_wechat_temp_screenshots.sh
 ```
 
-不要在没有用户明确确认的情况下自动发送。验证完成后，应及时清理临时截图。
+不要在没有用户明确确认的情况下自动发送。验证完成后，应该先问用户要不要清理这些临时截图。
 
 ### 视口归一化
 
@@ -207,19 +216,26 @@ scripts/focus_composer_and_set_value.sh "$msg"
 示例：
 
 ```bash
-scripts/scroll_chat_history.sh 8 180
+scripts/scroll_chat_history.sh 8
 scripts/capture_wechat_window.sh
 ```
 
-脚本会自动计算聊天正文区域的焦点位置，通常不需要手动传坐标。
+脚本会自动计算聊天正文区域的焦点位置；如果不传 `pixels`，还会根据当前窗口高度自适应计算滚动长度。
 
 如果要把整段历史截图下来给人审核，更适合直接跑：
 
 ```bash
-scripts/capture_chat_history_sequence.sh 20
+scripts/capture_chat_history_sequence.sh
 ```
 
-它会在临时目录里生成一组带重叠的历史截图，并在滚不动时自动停下。
+它现在默认一批抓 `100` 张；如果到达上限还没读到稳定顶部，应该先问用户是否继续。
+
+输出目录里还会包含：
+
+- `ocr/`：每页截图对应的 OCR 文本
+- `conversation-reference.md`：按页汇总的提取文本，便于后续参考
+
+如果截图里能识别到语音消息的 `转文字` 按钮，脚本会尽力先点开它、等待文字返回，再重拍这一页。
 
 ### 隐私约束
 
@@ -229,4 +245,4 @@ scripts/capture_chat_history_sequence.sh 20
 - 不要暴露本机用户名或绝对路径
 - 不要公开真实联系人名称或真实消息内容，除非已经明确做过匿名化
 - 示例里优先使用可复用的占位写法
-- 发送验证完成后应及时清理临时截图
+- 发送验证完成后，只有在用户明确要求清理时才删除临时截图

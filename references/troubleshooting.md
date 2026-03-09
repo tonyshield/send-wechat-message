@@ -88,7 +88,7 @@ If a group does not appear in the local result section:
 
 The capture helper writes screenshots into the macOS temp directory and tracks them in a state file so they can be cleaned later.
 
-After the send has been verified, run:
+Do not delete them automatically. Ask the user first, then run:
 
 ```bash
 scripts/cleanup_wechat_temp_screenshots.sh
@@ -154,11 +154,11 @@ Preferred fix:
 Use:
 
 ```bash
-scripts/scroll_chat_history.sh 8 180
+scripts/scroll_chat_history.sh 8
 scripts/capture_wechat_window.sh
 ```
 
-Prefer conservative scroll values to avoid skipping messages.
+If `pixels` is omitted, the helper computes it from the current window height. Prefer conservative values to avoid skipping messages.
 
 If scrolling still does nothing, the focus point may have landed outside the chat-history pane. Retry with explicit coordinates inside the message area:
 
@@ -171,10 +171,40 @@ scripts/scroll_chat_history.sh 8 180 520 300
 When you need to review a whole chat history manually, use the sequence capture helper:
 
 ```bash
-scripts/capture_chat_history_sequence.sh 20
+scripts/capture_chat_history_sequence.sh
 ```
 
-It captures overlapping pages into a temporary directory and records hashes in `metadata.txt`. This is better suited for audit/review than ad hoc one-off captures.
+It captures overlapping pages into a temporary directory and records hashes in `metadata.txt`. It now defaults to `100` pages per batch, writes OCR output into `ocr/`, and creates `conversation-reference.md` for later review.
+
+If `metadata.txt` says the batch reached `max_pages` without finding the stable top, ask the user whether to continue with another batch.
+
+## Voice Message Transcripts Do Not Expand
+
+The history-capture helper now tries to detect visible `转文字` controls with OCR, click them, wait for the transcript text to settle, and then recapture that page.
+
+If a voice transcript is still missing:
+
+- the button may not have been visible in the screenshot
+- OCR may not have recognized the button text
+- the transcript may still have been loading when the timeout expired
+
+You can retry manually on the current page with:
+
+```bash
+scripts/expand_visible_voice_transcripts.sh /path/to/current-page.png 12
+```
+
+Then recapture the page.
+
+## OCR Reference Text Looks Noisy
+
+`conversation-reference.md` and `ocr/page-*.txt` are OCR-derived reference files, not authoritative exports. Expect:
+
+- overlap duplicates between adjacent pages
+- imperfect recognition on emojis, images, and low-contrast text
+- partial misses on dense or stylized content
+
+Use these files as a reading aid, not as a canonical transcript.
 
 ## Fullscreen Or Zoom Level Is Inconsistent
 
