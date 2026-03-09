@@ -78,7 +78,7 @@ scripts/open_chat_safely.sh "<chat name>"
 scripts/search_chat_and_click_local_result.sh "<chat name>"
 ```
 
-5. This uses `Command+F` to focus WeChat search, writes the query through the focused search field's `AXValue`, waits for the dropdown to render, and OCR-clicks the top local result.
+5. This uses `Command+F` to focus WeChat search, writes the query through the focused search field's `AXValue`, waits for the dropdown to render, and prioritizes rows under local sections such as `群聊` or `联系人` instead of the top search suggestions.
 6. Pressing Return is no longer the preferred path because it may open `搜一搜` instead of the local result.
 
 Do not press Return immediately after typing into search. In the current macOS WeChat build, that often opens the separate `搜一搜` window instead of the local chat result.
@@ -216,7 +216,7 @@ If a real interaction taught the workflow, capture the behavior generically and 
 - `scripts/expand_visible_voice_transcripts.sh <image.png> [timeout_seconds]`: Best-effort click visible `转文字` buttons and wait for transcript text to settle.
 - `scripts/find_chat_in_sidebar_by_ocr.sh "<chat name>" [max_scrolls]`: Scan the left chat list with OCR and click the first visible matching chat row.
 - `scripts/open_chat_safely.sh "<chat name>"`: Prefer the visible home-page sidebar entry, fall back to search only if needed, and require OCR title verification before success.
-- `scripts/search_chat_and_click_local_result.sh "<chat name>"`: Focus the WeChat search box with `Command+F`, write the query through `AXValue`, and OCR-click the top local result.
+- `scripts/search_chat_and_click_local_result.sh "<chat name>"`: Focus the WeChat search box with `Command+F`, write the query through `AXValue`, and prefer local-section rows over top search suggestions when selecting a result.
 - `scripts/verify_current_chat_title_by_ocr.sh "<chat name>"`: Capture the current window and verify the active chat title via OCR before drafting or sending.
 - `scripts/open_chat_and_draft_safely.sh "<chat name>" "<message>"`: Open a verified chat and write the draft in one process to reduce repeated setup overhead.
 - `scripts/open_chat_mention_and_send_safely.sh "<chat name>" "<member_name>" "<message>"`: Open a verified group chat, resolve a visible `@` picker candidate, append the message body, and send within one prepared process.

@@ -109,7 +109,7 @@ The helper OCR-scans the visible `@` candidate list, clicks the matching member,
 - It first checks the current chat, then tries the currently visible home-page sidebar list, and only falls back to search if the target is not visible there.
 - Before drafting or sending, verify the active chat again with `scripts/verify_current_chat_title_by_ocr.sh "<chat name>"`.
 - Prefer `scripts/search_chat_and_click_local_result.sh "<chat name>"` for direct chats and already-synced group chats.
-- The helper uses `Command+F` to lock the search box, writes the query through `AXValue`, and OCR-clicks the top local result.
+- The helper uses `Command+F` to lock the search box, writes the query through `AXValue`, and prioritizes rows under local sections such as `群聊` or `联系人` instead of the top search suggestions.
 - In search, do not press Return immediately after entering text.
 - Avoid mouse-based selection for fragile states; keyboard navigation is more reliable.
 - If search becomes unstable, use `scripts/find_chat_in_sidebar_by_ocr.sh "<chat name>"` to scan the visible left chat list with OCR and click the first matching row.

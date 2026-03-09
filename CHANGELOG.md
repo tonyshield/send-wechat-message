@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Updated `search_chat_and_click_local_result.sh` to prefer local-section rows such as `群聊` or `联系人` instead of the top search suggestions.
+
 ## 0.15.0 - 2026-03-09
 
 - Refactored common OCR+click helpers into `scripts/lib_wechat_ui.sh` and updated chat-selection and mention scripts to use the shared library.
