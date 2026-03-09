@@ -109,3 +109,29 @@ Use `scripts/focus_composer_and_set_value.sh "<message>"` so the final text is w
 Use `scripts/capture_wechat_window.sh` instead of raw `screencapture`. The helper activates WeChat, reads the current window bounds through accessibility, and captures only that rectangle.
 
 If the screenshot is still wrong, verify that WeChat actually has an open front window before capturing.
+
+## Page Up Does Not Read Older Messages
+
+WeChat chat history may ignore `Page Up` even when the conversation is frontmost.
+
+Preferred fix:
+
+1. focus the chat body with a click-like event
+2. use small pixel-based scroll events
+3. capture after each scroll window
+4. stop once the date boundary is reached or the chat stops moving
+
+Use:
+
+```bash
+scripts/scroll_chat_history.sh 8 180
+scripts/capture_wechat_window.sh
+```
+
+Prefer conservative scroll values to avoid skipping messages.
+
+If scrolling still does nothing, the focus point may have landed outside the chat-history pane. Retry with explicit coordinates inside the message area:
+
+```bash
+scripts/scroll_chat_history.sh 8 180 520 300
+```

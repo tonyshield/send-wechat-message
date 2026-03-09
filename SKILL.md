@@ -20,6 +20,7 @@ Automate the macOS WeChat desktop client conservatively. Prefer deterministic GU
 7. Stop and ask for confirmation before sending.
 8. Send only after confirmation, then capture a proof screenshot.
 9. Clean temporary screenshots after the user has seen the verification.
+10. When the task is to read older messages, scroll the chat history upward in small increments and capture each checkpoint.
 
 ## Quick Start
 
@@ -74,6 +75,29 @@ After the correct chat is open:
 
 Prefer direct `AXValue` assignment over clipboard paste or simulated typing. This avoids IME transformations, candidate-bar interference, and cases where WeChat ignores `Command+V` even though the focus is already in the composer.
 
+## Reading History
+
+When the task is to inspect older messages in a chat:
+
+1. Open the correct conversation first.
+2. Capture the current screen state.
+3. Use `scripts/scroll_chat_history.sh` with modest increments so messages are not skipped.
+4. Capture again after each scroll window.
+5. Stop when you reach the desired date boundary, or when the chat no longer moves upward.
+
+Prefer many small scrolls over a few large jumps. In live testing, moderate pixel-based scrolling was more reliable than `Page Up`, and less likely to skip context than aggressive jumps.
+
+Recommended starting command:
+
+```bash
+scripts/scroll_chat_history.sh 8 180
+scripts/capture_wechat_window.sh
+```
+
+Use a larger `steps` count only after confirming the direction and density of messages in the current chat.
+
+The scroll helper computes a default focus point inside the chat-history pane. Override the coordinates only when the window layout is unusual.
+
 ## Sending Policy
 
 Always stop after the draft is visible and ask for explicit user confirmation.
@@ -124,6 +148,7 @@ If a real interaction taught the workflow, capture the behavior generically and 
 - `scripts/navigate_chat_list.sh <offset>`: Move the visible chat selection up or down with arrow keys.
 - `scripts/focus_composer_and_set_value.sh "<message>"`: Focus the composer, clear the current draft, and write the exact text through the focused text area's `AXValue`.
 - `scripts/focus_composer_and_paste.sh "<message>"`: Backward-compatible wrapper that forwards to `focus_composer_and_set_value.sh`.
+- `scripts/scroll_chat_history.sh [steps] [pixels] [x] [y]`: Focus the chat body and scroll older history upward in measured pixel increments.
 - `scripts/send_current_draft.sh`: Press Return in WeChat to send the currently visible draft.
 - `scripts/cleanup_wechat_temp_screenshots.sh`: Delete tracked WeChat screenshots from the temp directory after verification.
 
@@ -137,5 +162,6 @@ Read [references/troubleshooting.md](references/troubleshooting.md) when:
 - `Command+V` or the Edit menu paste does not land in the composer
 - WeChat search opens `搜一搜` instead of the local chat
 - a group chat cannot be found until local history is synced
+- older history must be read by controlled scroll instead of `Page Up`
 - temporary screenshots need to be cleaned after sending
 - window screenshots are blank or capture the desktop instead of WeChat

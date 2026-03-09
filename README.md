@@ -27,6 +27,7 @@ Live testing showed that WeChat may ignore clipboard paste even when the compose
 - `scripts/navigate_chat_list.sh <offset>`
 - `scripts/focus_composer_and_set_value.sh "<message>"`
 - `scripts/focus_composer_and_paste.sh "<message>"` (compatibility wrapper)
+- `scripts/scroll_chat_history.sh [steps] [pixels] [x] [y]`
 - `scripts/send_current_draft.sh`
 - `scripts/cleanup_wechat_temp_screenshots.sh`
 
@@ -50,6 +51,21 @@ Do not send automatically without explicit user confirmation. After verification
 - In search, do not press Return immediately after entering text.
 - Wait for the dropdown, move to the local result with arrow keys, then press Return.
 - Avoid mouse-based selection for fragile states; keyboard navigation is more reliable.
+
+### Reading chat history
+
+- `Page Up` is not reliable for WeChat history reading.
+- A better approach is to focus the chat body and send small pixel-based scroll events.
+- Use small increments first, capture each checkpoint, and stop when the date boundary is reached.
+
+Example:
+
+```bash
+scripts/scroll_chat_history.sh 8 180
+scripts/capture_wechat_window.sh
+```
+
+The helper computes a default focus point inside the chat-history pane, so you usually do not need to pass coordinates manually.
 
 ### Privacy
 
@@ -88,6 +104,7 @@ This repository is public. Published examples and docs should stay generic:
 - `scripts/navigate_chat_list.sh <offset>`
 - `scripts/focus_composer_and_set_value.sh "<message>"`
 - `scripts/focus_composer_and_paste.sh "<message>"`（兼容包装脚本）
+- `scripts/scroll_chat_history.sh [steps] [pixels] [x] [y]`
 - `scripts/send_current_draft.sh`
 - `scripts/cleanup_wechat_temp_screenshots.sh`
 
@@ -111,6 +128,21 @@ scripts/cleanup_wechat_temp_screenshots.sh
 - 在搜索框输入后不要立刻回车。
 - 先等下拉结果出现，再用方向键选中本地结果后回车。
 - 在容易失焦的场景里，优先使用键盘导航，不要依赖鼠标点选。
+
+### 读取历史消息
+
+- `Page Up` 对微信历史读取并不稳定。
+- 更稳的做法是先把焦点落在聊天正文区域，再发送小幅度的像素滚轮事件。
+- 先小步滚动、逐屏截图，确认方向和密度后再继续往上读。
+
+示例：
+
+```bash
+scripts/scroll_chat_history.sh 8 180
+scripts/capture_wechat_window.sh
+```
+
+脚本会自动计算聊天正文区域的焦点位置，通常不需要手动传坐标。
 
 ### 隐私约束
 
