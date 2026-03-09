@@ -59,11 +59,14 @@ This skill is optimized for the visible-chat path because WeChat exposes a spars
 
 When the target chat is not visible:
 
-1. Use `Command+F` to focus WeChat search.
-2. Write the search text through the focused search field's `AXValue`.
-3. Wait for the dropdown results to render.
-4. Use arrow keys to move onto the local result.
-5. Press Return only after a local chat or group result is highlighted.
+1. Prefer:
+
+```bash
+scripts/search_chat_and_click_local_result.sh "<chat name>"
+```
+
+2. This uses `Command+F` to focus WeChat search, writes the query through the focused search field's `AXValue`, waits for the dropdown to render, and OCR-clicks the top local result.
+3. Pressing Return is no longer the preferred path because it may open `搜一搜` instead of the local result.
 
 Do not press Return immediately after typing into search. In the current macOS WeChat build, that often opens the separate `搜一搜` window instead of the local chat result.
 
@@ -189,6 +192,7 @@ If a real interaction taught the workflow, capture the behavior generically and 
 - `scripts/ocr_wechat_screenshot.sh [--json] [--region left bottom width height] <image.png>`: Extract ordered OCR lines from a WeChat screenshot, optionally constrained to a normalized region.
 - `scripts/expand_visible_voice_transcripts.sh <image.png> [timeout_seconds]`: Best-effort click visible `转文字` buttons and wait for transcript text to settle.
 - `scripts/find_chat_in_sidebar_by_ocr.sh "<chat name>" [max_scrolls]`: Scan the left chat list with OCR and click the first visible matching chat row.
+- `scripts/search_chat_and_click_local_result.sh "<chat name>"`: Focus the WeChat search box with `Command+F`, write the query through `AXValue`, and OCR-click the top local result.
 - `scripts/navigate_chat_list.sh <offset>`: Move the visible chat selection up or down with arrow keys.
 - `scripts/focus_composer_and_set_value.sh "<message>"`: Focus the composer, clear the current draft, and write the exact text through the focused text area's `AXValue`.
 - `scripts/mention_group_member_and_set_value.sh "<member_name>" "<message>"`: In a group chat, open the `@` picker, OCR-click a visible member candidate, and append the body text through `AXValue`.

@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.12.0 - 2026-03-09
+
+- Added `search_chat_and_click_local_result.sh` to make `Command+F` plus `AXValue` search-box control the default chat-selection path.
+- Updated the docs to prefer OCR-clicking the top local search result instead of pressing Return in WeChat search.
+
 ## 0.11.0 - 2026-03-09
 
 - Added `mention_group_member_and_set_value.sh` to handle group-chat `@mentions` without letting the IME corrupt the body text.

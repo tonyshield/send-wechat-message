@@ -30,6 +30,7 @@ Live testing showed that WeChat may ignore clipboard paste even when the compose
 - `scripts/ocr_wechat_screenshot.sh [--json] [--region left bottom width height] <image.png>`
 - `scripts/expand_visible_voice_transcripts.sh <image.png> [timeout_seconds]`
 - `scripts/find_chat_in_sidebar_by_ocr.sh "<chat name>" [max_scrolls]`
+- `scripts/search_chat_and_click_local_result.sh "<chat name>"`
 - `scripts/focus_composer_and_set_value.sh "<message>"`
 - `scripts/mention_group_member_and_set_value.sh "<member_name>" "<message>"`
 - `scripts/focus_composer_and_paste.sh "<message>"` (compatibility wrapper)
@@ -90,8 +91,9 @@ The helper OCR-scans the visible `@` candidate list, clicks the matching member,
 ### Group chat and search notes
 
 - Group chats are searchable only after local history exists on the current Mac WeChat client.
+- Prefer `scripts/search_chat_and_click_local_result.sh "<chat name>"` for direct chats and already-synced group chats.
+- The helper uses `Command+F` to lock the search box, writes the query through `AXValue`, and OCR-clicks the top local result.
 - In search, do not press Return immediately after entering text.
-- Wait for the dropdown, move to the local result with arrow keys, then press Return.
 - Avoid mouse-based selection for fragile states; keyboard navigation is more reliable.
 - If search becomes unstable, use `scripts/find_chat_in_sidebar_by_ocr.sh "<chat name>"` to scan the visible left chat list with OCR and click the first matching row.
 
@@ -165,6 +167,7 @@ This repository is public. Published examples and docs should stay generic:
 - `scripts/ocr_wechat_screenshot.sh [--json] [--region left bottom width height] <image.png>`
 - `scripts/expand_visible_voice_transcripts.sh <image.png> [timeout_seconds]`
 - `scripts/find_chat_in_sidebar_by_ocr.sh "<chat name>" [max_scrolls]`
+- `scripts/search_chat_and_click_local_result.sh "<chat name>"`
 - `scripts/focus_composer_and_set_value.sh "<message>"`
 - `scripts/mention_group_member_and_set_value.sh "<member_name>" "<message>"`
 - `scripts/focus_composer_and_paste.sh "<message>"`（兼容包装脚本）
@@ -227,8 +230,9 @@ scripts/mention_group_member_and_set_value.sh "老妈" "现在这条消息是AI�
 ### 群聊与搜索经验
 
 - 群聊只有在当前 Mac 微信已经同步到本地历史后，才比较容易被本地搜索命中。
+- 直聊和已同步历史的群聊，优先用 `scripts/search_chat_and_click_local_result.sh "<chat name>"`。
+- 这个脚本会先用 `Command+F` 锁定搜索框，再通过 `AXValue` 写入查询词，并用 OCR 点中顶部本地结果。
 - 在搜索框输入后不要立刻回车。
-- 先等下拉结果出现，再用方向键选中本地结果后回车。
 - 在容易失焦的场景里，优先使用键盘导航，不要依赖鼠标点选。
 - 如果搜索本身不稳，就改用 `scripts/find_chat_in_sidebar_by_ocr.sh "<chat name>"`，它会 OCR 扫描左侧会话列表并点击第一个匹配项。
 

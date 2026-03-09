@@ -66,11 +66,11 @@ If you type a query and immediately press Return, WeChat may open the separate `
 
 Preferred fix:
 
-1. focus search with `Command+F`
-2. write the query
-3. wait for the dropdown results
-4. use arrow keys to move to the local result
-5. press Return only after the local result is highlighted
+```bash
+scripts/search_chat_and_click_local_result.sh "<chat name>"
+```
+
+This helper focuses search with `Command+F`, writes the query through the focused search field's `AXValue`, waits for the dropdown, and OCR-clicks the top local result.
 
 If `搜一搜` already opened, close that window and retry.
 
