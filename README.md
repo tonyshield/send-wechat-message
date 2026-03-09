@@ -97,7 +97,7 @@ scripts/focus_composer_and_set_value.sh "$msg"
 For group-chat `@mentions`, avoid typing the mention target and body through the IME after opening the picker. A more stable path is:
 
 ```bash
-scripts/mention_group_member_and_set_value.sh "老妈" "现在这条消息是AI发出来的"
+scripts/mention_group_member_and_set_value.sh "阿三" "现在这条消息是AI发出来的"
 ```
 
 The helper OCR-scans the visible `@` candidate list, clicks the matching member, then appends the body through `AXValue`.
@@ -259,7 +259,7 @@ scripts/focus_composer_and_set_value.sh "$msg"
 如果是在群聊里 `@` 某个成员，不要在打开 `@` 候选后继续靠输入法把成员名和正文都打进去。更稳的方式是：
 
 ```bash
-scripts/mention_group_member_and_set_value.sh "老妈" "现在这条消息是AI发出来的"
+scripts/mention_group_member_and_set_value.sh "阿三" "现在这条消息是AI发出来的"
 ```
 
 这个脚本会先 OCR 扫描当前可见的 `@` 候选列表并点中目标成员，然后再通过 `AXValue` 追加正文。

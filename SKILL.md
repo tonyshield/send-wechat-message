@@ -116,7 +116,7 @@ If the draft needs line breaks, pass real newline characters. Do not build the m
 For group-chat `@mentions`, do not keep typing the mention target and the body through the IME after opening the `@` picker. A more stable path is:
 
 ```bash
-scripts/mention_group_member_and_set_value.sh "老妈" "现在这条消息是AI发出来的"
+scripts/mention_group_member_and_set_value.sh "阿三" "现在这条消息是AI发出来的"
 ```
 
 This opens the `@` picker, uses OCR to click the visible member candidate, then appends the body through the composer's `AXValue` so the IME cannot corrupt the message text.

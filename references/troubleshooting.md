@@ -143,7 +143,7 @@ In group chats, once the `@` picker is open, continuing to type the member name 
 Preferred fix:
 
 ```bash
-scripts/mention_group_member_and_set_value.sh "老妈" "现在这条消息是AI发出来的"
+scripts/mention_group_member_and_set_value.sh "阿三" "现在这条消息是AI发出来的"
 ```
 
 This helper OCR-scans the visible `@` picker, clicks the matching member candidate, then appends the rest of the message through `AXValue`.
